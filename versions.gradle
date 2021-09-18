@@ -12,7 +12,10 @@ def _versions = [
         constraintLayoutVersion          : '2.1.0',
 
         // Coroutines
-        coroutinesVersion                : '1.4.3',
+        coroutinesVersion                : '1.5.1',
+
+        // Dagger 2
+        daggerVersion                    : '2.36',
 
         // Coil
         coilVersion                      : '1.3.2',

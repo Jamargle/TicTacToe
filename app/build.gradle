@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-kapt'
 }
 
 android {
@@ -41,6 +42,13 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$versions.appCompatVersion"
     implementation "com.google.android.material:material:$versions.materialVersion"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayoutVersion"
+
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutinesVersion"
+
+    //region Dagger 2
+    implementation "com.google.dagger:dagger:$versions.daggerVersion"
+    kapt "com.google.dagger:dagger-compiler:$versions.daggerVersion"
+    //endregion
 
     // region testing dependencies
     testImplementation "junit:junit:$versions.jUnitVersion"
