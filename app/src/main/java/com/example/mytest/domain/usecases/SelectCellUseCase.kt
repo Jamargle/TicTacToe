@@ -1,9 +1,9 @@
-package com.example.mytest.domain.model.usecases
+package com.example.mytest.domain.usecases
 
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.Player
-import com.example.mytest.domain.model.repositories.BoardRepository
+import com.example.mytest.domain.repositories.BoardRepository
 import kotlinx.coroutines.flow.lastOrNull
 
 class SelectCellUseCase(

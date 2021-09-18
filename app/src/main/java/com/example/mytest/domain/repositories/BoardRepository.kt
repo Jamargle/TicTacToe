@@ -1,4 +1,4 @@
-package com.example.mytest.domain.model.repositories
+package com.example.mytest.domain.repositories
 
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell

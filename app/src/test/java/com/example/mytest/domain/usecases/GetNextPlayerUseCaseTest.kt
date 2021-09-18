@@ -1,4 +1,4 @@
-package com.example.mytest.domain.model.usecases
+package com.example.mytest.domain.usecases
 
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
@@ -7,7 +7,7 @@ import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
-import com.example.mytest.domain.model.repositories.BoardRepository
+import com.example.mytest.domain.repositories.BoardRepository
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi

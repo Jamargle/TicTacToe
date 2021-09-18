@@ -1,9 +1,9 @@
-package com.example.mytest.domain.model.usecases
+package com.example.mytest.domain.usecases
 
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.GameState
-import com.example.mytest.domain.model.repositories.BoardRepository
+import com.example.mytest.domain.repositories.BoardRepository
 import com.example.mytest.domain.utils.WinnerCheckHelper
 import kotlinx.coroutines.flow.lastOrNull
 
