@@ -7,6 +7,7 @@ import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
 import com.example.mytest.domain.model.repositories.BoardRepository
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
@@ -28,7 +29,12 @@ class SelectCellUseCaseTest {
     }
 
     @Test
-    fun `returns failure if cell is already selected`() = runBlockingTest {
+    fun `returns failure if given cell is already selected`() = runBlockingTest {
+        assertTrue(selectCellUseCase(Cell(0, 0, XSelected), XPlayer).isFailure)
+    }
+
+    @Test
+    fun `returns failure if cell is already selected in the board`() = runBlockingTest {
         val expectedBoard = Board(listOf(Cell(0, 0, XSelected)))
         coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
         assertTrue(selectCellUseCase(Cell(0, 0), XPlayer).isFailure)
@@ -37,8 +43,12 @@ class SelectCellUseCaseTest {
     @Test
     fun `returns success if cell is still clear and selection is fine from boardRepository`() =
         runBlockingTest {
-            val expectedBoard = Board(listOf(Cell(0, 0, Clear)))
+            val givenCell = Cell(0, 0, Clear)
+            val expectedBoard = Board(listOf(givenCell))
             coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+            every { boardRepository.updateCellSelection(givenCell, XPlayer) } returns
+                    Result.success(Unit)
+
             assertTrue(selectCellUseCase(Cell(0, 0), XPlayer).isSuccess)
         }
 }
