@@ -1,7 +1,5 @@
 package com.example.mytest.domain.usecases
 
-import com.example.mytest.domain.model.Board
-import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.GameState
 import com.example.mytest.domain.repositories.BoardRepository
 import com.example.mytest.domain.utils.WinnerCheckHelper
@@ -23,6 +21,3 @@ class CheckGameStateUseCase(
             Result.success(gameState)
         } ?: Result.failure(Throwable("The board is not available"))
 }
-
-private fun Board.isCompleted() =
-    cells.find { it.state == Clear } == null
