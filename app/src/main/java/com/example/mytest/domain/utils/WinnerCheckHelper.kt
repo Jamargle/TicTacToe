@@ -10,6 +10,7 @@ import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import kotlin.math.sqrt
 
 class WinnerCheckHelper(
     private val backgroundDispatcher: CoroutineDispatcher
@@ -23,43 +24,68 @@ class WinnerCheckHelper(
     suspend fun checkForWinner(board: Board): Player? =
         withContext(backgroundDispatcher) {
             board.cells.filterNot { it.state == Clear }.let { selectedCells ->
-                val lastSelectedCell = selectedCells.last()
-                selectedCells.checkLineInNeighboursForCell(lastSelectedCell)
+                with(selectedCells.last()) {
+                    if (board.checkLineInNeighboursForCell(this)) {
+                        return@withContext getPlayer()
+                    }
+                }
             }
+            null
         }
 
-    private fun List<Cell>.checkLineInNeighboursForCell(cell: Cell): Player? {
-        if (checkLineHorizontally(cell)) {
-            return cell.getPlayer()
-        }
-        if (checkLineVertically(cell)) {
-            return cell.getPlayer()
-        }
-        if (checkLineDiagonals(cell)) {
-            return cell.getPlayer()
-        }
-        return null
-    }
+    private fun Board.checkLineInNeighboursForCell(cell: Cell) =
+        checkLineHorizontally(cell) || checkLineVertically(cell) || checkLineDiagonals(cell)
 
-    private fun List<Cell>.checkLineHorizontally(cell: Cell): Boolean {
-        val selectedCellsInRow = filter { it.row == cell.row && it.state == cell.state }
+    private fun Board.checkLineHorizontally(cell: Cell): Boolean {
+        val selectedCellsInRow = cells.filter { it.row == cell.row && it.state == cell.state }
         if (selectedCellsInRow.size > 2) {
             return true
         }
         return false
     }
 
-    private fun List<Cell>.checkLineVertically(cell: Cell): Boolean {
-        val selectedCellsInColumn = filter { it.column == cell.column && it.state == cell.state }
+    private fun Board.checkLineVertically(cell: Cell): Boolean {
+        val selectedCellsInColumn =
+            cells.filter { it.column == cell.column && it.state == cell.state }
         if (selectedCellsInColumn.size > 2) {
             return true
         }
         return false
     }
 
-    private fun List<Cell>.checkLineDiagonals(cell: Cell): Boolean {
-        // TODO to be implemented
-        return false
+    private fun Board.checkLineDiagonals(cell: Cell): Boolean {
+        val boardSideSize = sqrt(cells.size.toDouble()).toInt()
+        val selectedCellInDiagonalRight = mutableListOf<Cell>()
+        for (i in 0 until boardSideSize) {
+            val cellInDiagonal = cells.find {
+                it.row == i &&
+                        it.column == i &&
+                        it.state == cell.state
+            }
+            if (cellInDiagonal != null) {
+                selectedCellInDiagonalRight.add(cell)
+            }
+        }
+        if (selectedCellInDiagonalRight.size >= 3) {
+            return true
+        }
+
+        val selectedCellInDiagonalLeft = mutableListOf<Cell>()
+
+        var columnIndex = 2
+        for (rowIndex in 0 until boardSideSize) {
+            val cellInDiagonal = cells.find {
+                it.row == rowIndex &&
+                        it.column == columnIndex &&
+                        it.state == cell.state
+            }
+            columnIndex--
+            if (cellInDiagonal != null) {
+                selectedCellInDiagonalLeft.add(cell)
+            }
+        }
+
+        return selectedCellInDiagonalLeft.size >= 3
     }
 
     private fun Cell.getPlayer() =
