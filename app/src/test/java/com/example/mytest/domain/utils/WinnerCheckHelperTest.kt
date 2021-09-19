@@ -38,10 +38,6 @@ class WinnerCheckHelperTest {
     }
     // endregion
 
-    @Test
-    fun `checkForWinner returns null if the board is not completed`() = runBlockingTest {
-        assertNull(winnerCheckHelper.checkForWinner(Board(cleanBoardCells)))
-    }
 
     @Test
     fun `checkForWinner returns null if the board is completed but does not contain a line for any player`() =
@@ -71,7 +67,7 @@ class WinnerCheckHelperTest {
                 add(0, Cell(0, 0, XSelected))
                 removeAt(1)
                 add(1, Cell(0, 1, XSelected))
-                removeAt(1)
+                removeAt(2)
                 add(2, Cell(0, 2, XSelected))
             })
 
@@ -191,7 +187,7 @@ class WinnerCheckHelperTest {
                 add(0, Cell(0, 0, OSelected))
                 removeAt(1)
                 add(1, Cell(0, 1, OSelected))
-                removeAt(1)
+                removeAt(2)
                 add(2, Cell(0, 2, OSelected))
             })
 
