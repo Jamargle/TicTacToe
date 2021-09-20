@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
+import com.example.mytest.domain.model.GameState
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
@@ -44,7 +45,13 @@ class BoardViewModel(
                     println("Error selecting the cell $cell")
                 },
                 onSuccess = {
-                    viewState.updateTurn(getNextTurn(currentPlayer))
+                    checkGameState.invoke().getOrNull()?.let { state ->
+                        when (state) {
+                            GameState.Draw -> viewState.displayDrawGame()
+                            GameState.Ongoing -> viewState.updateTurn(getNextTurn(currentPlayer))
+                            is GameState.Winner -> viewState.displayWinner(currentPlayer)
+                        }
+                    }
                 }
             )
         }
