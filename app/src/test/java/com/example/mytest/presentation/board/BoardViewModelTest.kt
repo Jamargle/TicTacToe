@@ -5,6 +5,7 @@ import com.example.mytest.MainCoroutineRule
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.Clear
+import com.example.mytest.domain.model.GameState
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.XPlayer
@@ -80,14 +81,78 @@ class BoardViewModelTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
             val givenCell = Cell(0, 0, Clear)
-            val success = Result.success(Unit)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns success
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
 
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
 
             coVerify(exactly = 1) { selectCell(givenCell, expectedPlayer) }
-            verify(exactly = 1) { viewState.updateTurn(OPlayer) }
+        }
+
+    @Test
+    fun `onCellClicked checks game state after marking cell as selected with success`() =
+        runBlockingTest {
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            coVerify(ordering = Ordering.ORDERED) {
+                selectCell(givenCell, expectedPlayer)
+                checkGameState()
+            }
+        }
+
+    @Test
+    fun `onCellClicked displays Draw state of the game when checkGameState returns Draw`() =
+        runBlockingTest {
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Draw)
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            coVerify { viewState.displayDrawGame() }
+        }
+
+    @Test
+    fun `onCellClicked displays Winner with player when checkGameState returns Winner`() =
+        runBlockingTest {
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Winner(expectedPlayer))
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            coVerify { viewState.displayWinner(expectedPlayer) }
+        }
+
+    @Test
+    fun `onCellClicked updates turn when checkGameState returns Ongoing`() =
+        runBlockingTest {
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            coVerify { viewState.updateTurn(OPlayer) }
+            coVerify(exactly = 0) {
+                viewState.displayDrawGame()
+                viewState.displayWinner(any())
+            }
         }
 
     @Test
@@ -95,8 +160,8 @@ class BoardViewModelTest {
         val expectedPlayer = XPlayer
         coEvery { getNextPlayer() } returns expectedPlayer
         val givenCell = Cell(0, 0, OSelected)
-        val failure = Result.failure<Unit>(Throwable(""))
-        coEvery { selectCell(givenCell, expectedPlayer) } returns failure
+        coEvery { selectCell(givenCell, expectedPlayer) } returns
+                Result.failure(Throwable(""))
 
         val viewModel = createBoardViewModel()
         viewModel.onCellClicked(givenCell)
