@@ -11,7 +11,6 @@ import com.example.mytest.domain.usecases.CheckGameStateUseCase
 import com.example.mytest.domain.usecases.GetBoardStateUseCase
 import com.example.mytest.domain.usecases.GetNextPlayerUseCase
 import com.example.mytest.domain.usecases.SelectCellUseCase
-import io.mockk.Called
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.mockk
@@ -60,19 +59,20 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun `onCellClicked marks cell as selected for the next player if cell is clear`() {
-        val expectedPlayer = XPlayer
-        coEvery { getNextPlayer() } returns expectedPlayer
-        val givenCell = Cell(0, 0, Clear)
+    fun `onCellClicked marks cell as selected for the next player if cell is clear`() =
+        runBlockingTest {
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
 
-        val viewModel = createBoardViewModel()
-        viewModel.onCellClicked(givenCell)
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
 
-        coVerify { selectCell(givenCell, expectedPlayer) }
-    }
+            coVerify(exactly = 1) { selectCell(givenCell, expectedPlayer) }
+        }
 
     @Test
-    fun `onCellClicked does nothing if the given cell is already selected`() {
+    fun `onCellClicked does nothing if the given cell is already selected`() = runBlockingTest {
         val expectedPlayer = XPlayer
         coEvery { getNextPlayer() } returns expectedPlayer
         val givenCell = Cell(0, 0, OSelected)
@@ -80,7 +80,7 @@ class BoardViewModelTest {
         val viewModel = createBoardViewModel()
         viewModel.onCellClicked(givenCell)
 
-        coVerify { selectCell(givenCell, expectedPlayer) wasNot Called }
+        coVerify(exactly = 0) { selectCell(givenCell, expectedPlayer) }
     }
 
 }
