@@ -1,43 +1,31 @@
 package com.example.mytest.domain.utils
 
+import com.example.mytest.MainCoroutineRule
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
-import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class WinnerCheckHelperTest {
 
     // region test setup
+    @get:Rule
+    var mainCoroutineRule = MainCoroutineRule()
+
     private val testDispatcher = TestCoroutineDispatcher()
 
     private val winnerCheckHelper = WinnerCheckHelper(testDispatcher)
-
-    @Before
-    fun setup() {
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    @After
-    fun tearDown() {
-        Dispatchers.resetMain()
-        testDispatcher.cleanupTestCoroutines()
-    }
     // endregion
-
 
     @Test
     fun `checkForWinner returns null if the board is completed but does not contain a line for any player`() =

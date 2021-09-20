@@ -43,6 +43,7 @@ dependencies {
     implementation "com.google.android.material:material:$versions.materialVersion"
     implementation "androidx.constraintlayout:constraintlayout:$versions.constraintLayoutVersion"
 
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$versions.viewModelKtxVersion"
     implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:$versions.coroutinesVersion"
 
     //region Dagger 2
@@ -53,6 +54,7 @@ dependencies {
     // region testing dependencies
     testImplementation "junit:junit:$versions.jUnitVersion"
     testImplementation "io.mockk:mockk:$versions.mockkVersion"
+    testImplementation "androidx.arch.core:core-testing:$versions.archCoreVersion"
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutinesVersion"
     androidTestImplementation "androidx.test.ext:junit:$versions.androidXJUnitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espressoCoreVersion"
