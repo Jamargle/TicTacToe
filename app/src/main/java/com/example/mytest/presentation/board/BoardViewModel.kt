@@ -32,7 +32,7 @@ class BoardViewModel(
         viewState.showLoading()
         observeBoardUpdates()
         viewModelScope.launch {
-            viewState.updateTurn(getNextTurn())
+            viewState.updateTurn(getNextPlayerUseCase())
         }
     }
 
@@ -81,17 +81,10 @@ class BoardViewModel(
         checkGameStateUseCase().getOrNull()?.let { state ->
             when (state) {
                 GameState.Draw -> viewState.displayDrawGame()
-                GameState.Ongoing -> viewState.updateTurn(getNextTurn(currentPlayer))
+                GameState.Ongoing -> viewState.updateTurn(getNextPlayerUseCase())
                 is GameState.Winner -> viewState.displayWinner(currentPlayer)
             }
         }
     }
-
-    private suspend fun getNextTurn(currentPlayer: Player? = null) =
-        when (currentPlayer) {
-            is XPlayer -> OPlayer
-            is OPlayer -> XPlayer
-            else -> getNextPlayerUseCase()
-        }
 
 }

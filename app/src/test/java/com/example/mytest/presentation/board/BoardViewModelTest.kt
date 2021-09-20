@@ -42,8 +42,15 @@ class BoardViewModelTest {
     private val viewState = mockk<BoardViewState>(relaxed = true)
     private val getBoardState = mockk<GetBoardStateUseCase>()
     private val checkGameState = mockk<CheckGameStateUseCase>()
-    private val getNextPlayer = mockk<GetNextPlayerUseCase>()
     private val selectCell = mockk<SelectCellUseCase>()
+
+    private var currentPlayer: Player = XPlayer
+    private val getNextPlayer = mockk<GetNextPlayerUseCase> {
+        coEvery { this@mockk.invoke() } returns when (currentPlayer) {
+            is XPlayer -> OPlayer
+            is OPlayer -> XPlayer
+        }
+    }
 
     private fun createBoardViewModel() = BoardViewModel(
         viewState,
@@ -179,16 +186,16 @@ class BoardViewModelTest {
     @Test
     fun `onCellClicked updates turn when checkGameState returns Ongoing`() =
         runBlockingTest {
-            val expectedPlayer = XPlayer
-            coEvery { getNextPlayer() } returns expectedPlayer
+            val currentPlayer = XPlayer
+            val nextPlayer = OPlayer
             val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            coEvery { selectCell(givenCell, currentPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
 
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
 
-            coVerify { viewState.updateTurn(OPlayer) }
+            coVerify { viewState.updateTurn(nextPlayer) }
             coVerify(exactly = 0) {
                 viewState.displayDrawGame()
                 viewState.displayWinner(any())
