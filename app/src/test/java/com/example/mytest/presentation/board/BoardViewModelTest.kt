@@ -1,6 +1,7 @@
 package com.example.mytest.presentation.board
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import androidx.lifecycle.MutableLiveData
 import com.example.mytest.MainCoroutineRule
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
@@ -8,6 +9,7 @@ import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.GameState
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.OSelected
+import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.usecases.CheckGameStateUseCase
 import com.example.mytest.domain.usecases.GetBoardStateUseCase
@@ -16,11 +18,13 @@ import com.example.mytest.domain.usecases.SelectCellUseCase
 import io.mockk.Ordering
 import io.mockk.coEvery
 import io.mockk.coVerify
+import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -73,6 +77,42 @@ class BoardViewModelTest {
         coEvery { getNextPlayer() } returns XPlayer
         createBoardViewModel()
         verify { viewState.updateTurn(XPlayer) }
+    }
+
+    @Test
+    fun `viewModel exposes state of the view through getViewState`() = runBlockingTest {
+        val expectedViewState = mockk<MutableLiveData<ViewStates>>()
+        every { viewState.viewState } returns expectedViewState
+        val viewModel = createBoardViewModel()
+
+        assertEquals(
+            expectedViewState,
+            viewModel.getViewState()
+        )
+    }
+
+    @Test
+    fun `viewModel exposes state of the board through getBoardState`() = runBlockingTest {
+        val expectedBoardState = mockk<MutableLiveData<Board>>()
+        every { viewState.boardState } returns expectedBoardState
+        val viewModel = createBoardViewModel()
+
+        assertEquals(
+            expectedBoardState,
+            viewModel.getBoardState()
+        )
+    }
+
+    @Test
+    fun `viewModel exposes current player turn through getBoardState`() = runBlockingTest {
+        val expectedPlayerTurn = mockk<MutableLiveData<Player>>()
+        every { viewState.playerTurn } returns expectedPlayerTurn
+        val viewModel = createBoardViewModel()
+
+        assertEquals(
+            expectedPlayerTurn,
+            viewModel.getPlayerTurnState()
+        )
     }
 
     @Test

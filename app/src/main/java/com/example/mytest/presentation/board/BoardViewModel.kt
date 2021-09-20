@@ -46,7 +46,20 @@ class BoardViewModel(
         }
     }
 
+    /**
+     * It lets the [BoardViewModel] consumers subscribe to get view state updates.
+     */
+    fun getViewState(): LiveData<ViewStates> = viewState.viewState
+
+    /**
+     * It lets the [BoardViewModel] consumers subscribe to get board updates.
+     */
     fun getBoardState(): LiveData<Board> = viewState.boardState
+
+    /**
+     * It lets the [BoardViewModel] consumers subscribe to get player turn updates.
+     */
+    fun getPlayerTurnState(): LiveData<Player> = viewState.playerTurn
 
     fun onCellClicked(cell: Cell) {
         viewModelScope.launch {
