@@ -13,24 +13,36 @@ import com.example.mytest.domain.usecases.CheckGameStateUseCase
 import com.example.mytest.domain.usecases.GetBoardStateUseCase
 import com.example.mytest.domain.usecases.GetNextPlayerUseCase
 import com.example.mytest.domain.usecases.SelectCellUseCase
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 
 class BoardViewModel(
     private val viewState: BoardViewState,
-    private val getBoardState: GetBoardStateUseCase,
-    private val checkGameState: CheckGameStateUseCase,
-    private val getNextPlayer: GetNextPlayerUseCase,
-    private val selectCell: SelectCellUseCase
+    private val getBoardStateUseCase: GetBoardStateUseCase,
+    private val checkGameStateUseCase: CheckGameStateUseCase,
+    private val getNextPlayerUseCase: GetNextPlayerUseCase,
+    private val selectCellUseCase: SelectCellUseCase,
+    private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
     init {
         viewState.showLoading()
+        observeBoardUpdates()
         viewModelScope.launch {
-            getBoardState.invoke().collect {
-                viewState.updateBoard(it)
-                viewState.updateTurn(getNextTurn())
-            }
+            viewState.updateTurn(getNextTurn())
+        }
+    }
+
+    private fun observeBoardUpdates() {
+        viewModelScope.launch {
+            getBoardStateUseCase()
+                .flowOn(backgroundDispatcher)
+                .collect {
+                    viewState.updateBoard(it)
+                }
         }
     }
 
@@ -38,22 +50,27 @@ class BoardViewModel(
 
     fun onCellClicked(cell: Cell) {
         viewModelScope.launch {
-            val currentPlayer = getNextPlayer()
+            val currentPlayer = getNextPlayerUseCase()
+            selectCell(cell, currentPlayer)
+        }
+    }
 
-            selectCell(cell, currentPlayer).fold(
-                onFailure = {
-                    println("Error selecting the cell $cell")
-                },
-                onSuccess = {
-                    checkGameState.invoke().getOrNull()?.let { state ->
-                        when (state) {
-                            GameState.Draw -> viewState.displayDrawGame()
-                            GameState.Ongoing -> viewState.updateTurn(getNextTurn(currentPlayer))
-                            is GameState.Winner -> viewState.displayWinner(currentPlayer)
-                        }
-                    }
-                }
-            )
+    private suspend fun selectCell(cell: Cell, currentPlayer: Player) {
+        selectCellUseCase(cell, currentPlayer).fold(
+            onFailure = {
+                println("Error selecting the cell $cell")
+            },
+            onSuccess = { checkGameState(currentPlayer) }
+        )
+    }
+
+    private suspend fun checkGameState(currentPlayer: Player) {
+        checkGameStateUseCase().getOrNull()?.let { state ->
+            when (state) {
+                GameState.Draw -> viewState.displayDrawGame()
+                GameState.Ongoing -> viewState.updateTurn(getNextTurn(currentPlayer))
+                is GameState.Winner -> viewState.displayWinner(currentPlayer)
+            }
         }
     }
 
@@ -61,7 +78,7 @@ class BoardViewModel(
         when (currentPlayer) {
             is XPlayer -> OPlayer
             is OPlayer -> XPlayer
-            else -> getNextPlayer()
+            else -> getNextPlayerUseCase()
         }
 
 }
