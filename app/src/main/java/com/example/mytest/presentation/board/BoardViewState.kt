@@ -3,8 +3,10 @@ package com.example.mytest.presentation.board
 import androidx.lifecycle.MutableLiveData
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Player
+import javax.inject.Inject
 
-class BoardViewState {
+class BoardViewState
+@Inject constructor() {
 
     internal val viewState: MutableLiveData<ViewStates> = MutableLiveData()
     internal val boardState: MutableLiveData<Board> = MutableLiveData()

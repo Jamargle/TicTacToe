@@ -1,13 +1,17 @@
 package com.example.mytest.domain.usecases
 
+import com.example.mytest.app.di.RepositoryModule
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.repositories.BoardRepository
 import kotlinx.coroutines.flow.lastOrNull
+import javax.inject.Inject
+import javax.inject.Named
 
-class SelectCellUseCase(
-    private val boardRepository: BoardRepository
+class SelectCellUseCase
+@Inject constructor(
+    @Named(RepositoryModule.ON_MEMORY_BOARD_REPOSITORY) private val boardRepository: BoardRepository
 ) {
 
     suspend operator fun invoke(cell: Cell, player: Player): Result<Unit> {

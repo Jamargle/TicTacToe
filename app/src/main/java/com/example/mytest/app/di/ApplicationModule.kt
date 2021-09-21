@@ -12,7 +12,16 @@ class ApplicationModule {
 
     @Provides
     @Singleton
-    @Named("BackgroundDispatcher")
+    @Named(BACKGROUND_DISPATCHER)
     fun provideBackgroundDispatcher(): CoroutineDispatcher = Dispatchers.IO
 
+    @Provides
+    @Singleton
+    @Named(BOARD_SIZE)
+    fun provideBoardSize(): Int = 3
+
+    companion object {
+        const val BACKGROUND_DISPATCHER = "Inject:BackgroundDispatcher"
+        const val BOARD_SIZE = "Inject:BoardSideSize"
+    }
 }

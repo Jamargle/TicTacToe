@@ -1,5 +1,6 @@
 package com.example.mytest.data
 
+import com.example.mytest.app.di.ApplicationModule.Companion.BOARD_SIZE
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.Clear
@@ -11,11 +12,14 @@ import com.example.mytest.domain.model.XSelected
 import com.example.mytest.domain.repositories.BoardRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 
-private const val BOARD_SIDE_SIZE_DEFAULT = 3
-
-class OnMemoryBoardRepository(
-    private val boardSideSize: Int = BOARD_SIDE_SIZE_DEFAULT
+@Singleton
+class OnMemoryBoardRepository
+@Inject constructor(
+    @Named(BOARD_SIZE) private val boardSideSize: Int
 ) : BoardRepository {
 
     private var boardFlow: MutableStateFlow<Board> = MutableStateFlow(getClearBoard())

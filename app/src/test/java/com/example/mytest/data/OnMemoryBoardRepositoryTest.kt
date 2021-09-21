@@ -17,7 +17,7 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class OnMemoryBoardRepositoryTest {
 
-    private val repository = OnMemoryBoardRepository()
+    private val repository = OnMemoryBoardRepository(boardSideSize = 3)
 
     @Test
     fun `starts with clear board`() = runBlockingTest {

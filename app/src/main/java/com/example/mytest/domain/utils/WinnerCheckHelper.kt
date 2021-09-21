@@ -1,5 +1,6 @@
 package com.example.mytest.domain.utils
 
+import com.example.mytest.app.di.ApplicationModule.Companion.BACKGROUND_DISPATCHER
 import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.Clear
@@ -10,10 +11,15 @@ import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 import kotlin.math.sqrt
 
-class WinnerCheckHelper(
-    private val backgroundDispatcher: CoroutineDispatcher
+@Singleton
+class WinnerCheckHelper
+@Inject constructor(
+    @Named(BACKGROUND_DISPATCHER) private val backgroundDispatcher: CoroutineDispatcher
 ) {
 
     /**
