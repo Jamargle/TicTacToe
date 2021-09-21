@@ -1,15 +1,16 @@
 package com.example.mytest.app.features.board
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.example.mytest.R
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
-import com.example.mytest.isDisplayed
-import com.example.mytest.withImage
-import com.example.mytest.withText
+import com.example.mytest.utils.isDisplayed
+import com.example.mytest.utils.withCompoundDrawable
+import com.example.mytest.utils.withText
 import org.hamcrest.CoreMatchers.allOf
 
 inline fun onTurnView(block: BoardRobot.() -> Unit) = BoardRobot().apply(block)
@@ -28,14 +29,11 @@ class BoardRobot {
     }
 
     fun hasNextTurnWith(player: Player) {
-        onView(withId(R.id.next_player_title))
-            .withText(R.string.next_player_title_label)
-            .isDisplayed()
-
         onView(withId(R.id.next_player)).run {
+            withText(R.string.next_player_title_label)
             when (player) {
-                XPlayer -> withImage(R.drawable.ic_x)
-                OPlayer -> withImage(R.drawable.ic_o)
+                XPlayer -> check(matches(withCompoundDrawable(R.drawable.ic_x)))
+                OPlayer -> check(matches(withCompoundDrawable(R.drawable.ic_o)))
             }
             isDisplayed()
         }

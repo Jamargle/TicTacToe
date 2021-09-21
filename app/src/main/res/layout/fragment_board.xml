@@ -8,6 +8,7 @@
         android:id="@+id/header"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_space"
         android:text="@string/board_screen_title"
         android:textAppearance="?textAppearanceHeadline3"
         app:layout_constraintEnd_toEndOf="parent"
@@ -15,26 +16,19 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/next_player_title"
+        android:id="@+id/next_player"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_space"
+        android:drawablePadding="@dimen/default_small_space"
+        android:gravity="center"
+        android:padding="@dimen/default_space"
         android:text="@string/next_player_title_label"
         android:textAppearance="?textAppearanceHeadline5"
-        app:layout_constraintEnd_toStartOf="@id/next_player"
+        app:drawableRightCompat="@drawable/ic_x"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header" />
-
-    <ImageView
-        android:id="@+id/next_player"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_x"
-        android:textAppearance="?textAppearanceHeadline6"
-        app:layout_constraintBottom_toBottomOf="@id/next_player_title"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@id/next_player_title"
-        app:layout_constraintTop_toTopOf="@id/next_player_title"
-        android:contentDescription="TODO" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/board"
@@ -44,6 +38,6 @@
         android:textAppearance="?textAppearanceHeadline6"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/next_player_title" />
+        app:layout_constraintTop_toBottomOf="@id/next_player" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
