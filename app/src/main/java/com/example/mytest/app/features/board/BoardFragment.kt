@@ -15,6 +15,7 @@ import com.example.mytest.app.CustomApplication
 import com.example.mytest.app.di.BoardViewModelFactory
 import com.example.mytest.databinding.FragmentBoardBinding
 import com.example.mytest.domain.model.Board
+import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.CellState
 import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.OPlayer
@@ -81,6 +82,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentBoardBinding.bind(view)
         initViewStateObservers()
+        initCellClickListeners()
     }
 
     override fun onDestroyView() {
@@ -94,6 +96,18 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
             getBoardState().observe(viewLifecycleOwner, onBoardStateChange)
             getViewState().observe(viewLifecycleOwner, onViewStateChange)
         }
+    }
+
+    private fun initCellClickListeners() {
+        binding.cell1.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell2.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell3.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell4.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell5.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell6.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell7.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell8.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
+        binding.cell9.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
     }
 
     private fun updateBoard(board: Board) {
@@ -111,19 +125,17 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
                 else -> null
             }
             if (cellView != null) {
-                setCellStateFor(cellView, it.state)
+                setCellStateFor(cellView, it)
             }
         }
     }
 
-    private fun setCellStateFor(cellView: MaterialCardView, state: CellState) {
-        cellView.cardElevation = getElevationForState(state)
+    private fun setCellStateFor(cellView: MaterialCardView, cell: Cell) {
+        cellView.cardElevation = getElevationForState(cell.state)
 
-        getDrawableForState(state)?.let {
-            with(cellView.children.first() as ImageView) {
-                tag = it
-                setImageResource(it)
-            }
+        cellView.tag = cell
+        with(cellView.children.first() as ImageView) {
+            setImageResource(getDrawableForState(cell.state))
         }
     }
 
@@ -139,7 +151,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     private fun getDrawableForState(state: CellState) = when (state) {
         OSelected -> R.drawable.ic_o
         XSelected -> R.drawable.ic_x
-        else -> null
+        Clear -> 0
     }
 
     private fun initApplicationComponent() {
