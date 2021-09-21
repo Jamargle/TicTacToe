@@ -45,8 +45,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_1"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toTopOf="@id/cell_4"
             app:layout_constraintEnd_toStartOf="@id/cell_2"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,8 +56,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_2"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toTopOf="@id/cell_5"
             app:layout_constraintEnd_toStartOf="@id/cell_3"
             app:layout_constraintStart_toEndOf="@id/cell_1"
@@ -63,8 +67,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_3"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toTopOf="@id/cell_6"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cell_2"
@@ -72,8 +78,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_4"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toTopOf="@id/cell_7"
             app:layout_constraintEnd_toStartOf="@id/cell_5"
             app:layout_constraintStart_toStartOf="parent"
@@ -81,8 +89,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_5"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toTopOf="@id/cell_8"
             app:layout_constraintEnd_toStartOf="@id/cell_6"
             app:layout_constraintStart_toEndOf="@id/cell_4"
@@ -90,8 +100,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_6"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toTopOf="@id/cell_9"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cell_5"
@@ -99,8 +111,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_7"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cell_8"
             app:layout_constraintStart_toStartOf="parent"
@@ -108,8 +122,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_8"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/cell_9"
             app:layout_constraintStart_toEndOf="@id/cell_7"
@@ -117,8 +133,10 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cell_9"
+            style="@style/Cell"
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
+            android:layout_margin="@dimen/default_small_space"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cell_8"

@@ -2,5 +2,8 @@
 <resources>
     <dimen name="default_space">16dp</dimen>
     <dimen name="default_small_space">8dp</dimen>
+
+    <!--  Board dimens  -->
     <dimen name="cell_size">80dp</dimen>
+    <dimen name="cell_elevation">30dp</dimen>
 </resources>
