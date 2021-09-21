@@ -1,8 +1,8 @@
-package com.example.mytest
+package com.example.mytest.app
 
 import android.app.Application
-import com.example.mytest.di.ApplicationComponent
-import com.example.mytest.di.DaggerApplicationComponent
+import com.example.mytest.app.di.ApplicationComponent
+import com.example.mytest.app.di.DaggerApplicationComponent
 
 class CustomApplication : Application() {
 
