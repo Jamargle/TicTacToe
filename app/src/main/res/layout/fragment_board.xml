@@ -35,4 +35,14 @@
         app:layout_constraintTop_toTopOf="@id/next_player_title"
         tools:text="Some player" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/board"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="The board will be here"
+        android:textAppearance="?textAppearanceHeadline6"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/next_player_title" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
