@@ -1,6 +1,7 @@
 package com.example.mytest.app.features.board
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -12,6 +13,7 @@ import com.example.mytest.utils.isDisplayed
 import com.example.mytest.utils.withCompoundDrawable
 import com.example.mytest.utils.withText
 import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.not
 
 inline fun onTurnView(block: BoardRobot.() -> Unit) = BoardRobot().apply(block)
 
@@ -39,7 +41,32 @@ class BoardRobot {
         }
     }
 
-    fun hasBoard() {
-        onView(withId(R.id.board)).isDisplayed()
+    fun hasClearBoard() {
+        val cellViews = listOf(
+            onView(withId(R.id.cell_1)),
+            onView(withId(R.id.cell_2)),
+            onView(withId(R.id.cell_3)),
+            onView(withId(R.id.cell_4)),
+            onView(withId(R.id.cell_5)),
+            onView(withId(R.id.cell_6)),
+            onView(withId(R.id.cell_7)),
+            onView(withId(R.id.cell_8)),
+            onView(withId(R.id.cell_9)),
+        )
+        cellViews.forEach {
+            it.isDisplayed()
+            it.isNotSelected()
+        }
+    }
+
+    private fun ViewInteraction.isNotSelected() {
+        check(
+            matches(
+                allOf(
+                    not(withCompoundDrawable(R.drawable.ic_x)),
+                    not(withCompoundDrawable(R.drawable.ic_o))
+                )
+            )
+        )
     }
 }

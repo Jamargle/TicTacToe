@@ -27,7 +27,7 @@ class BoardFragmentTest {
         }
 
         onBoardView {
-            hasBoard()
+            hasClearBoard()
         }
     }
 }
