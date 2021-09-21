@@ -1,4 +1,4 @@
-package com.example.mytest.app.features.board
+package com.example.mytest
 
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches

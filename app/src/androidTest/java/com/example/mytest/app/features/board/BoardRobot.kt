@@ -7,6 +7,8 @@ import com.example.mytest.R
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
+import com.example.mytest.isDisplayed
+import com.example.mytest.withText
 import org.hamcrest.CoreMatchers.allOf
 
 inline fun onTurnView(block: BoardRobot.() -> Unit) = BoardRobot().apply(block)
