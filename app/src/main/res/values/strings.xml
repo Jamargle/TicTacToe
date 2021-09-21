@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyTest</string>
     <string name="board_screen_title">TIC TAC TOE</string>
+    <string name="next_player_title_label">Next Player:</string>
 </resources>

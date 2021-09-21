@@ -1,8 +1,6 @@
 package com.example.mytest.app.features.board
 
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.example.mytest.R
@@ -23,26 +21,24 @@ class BoardRobot {
                 withId(R.id.header),
                 withText(R.string.board_screen_title)
             )
-        ).check(matches(isDisplayed()))
+        ).isDisplayed()
     }
 
     fun hasNextTurnWith(player: Player) {
-        onView(withId(R.id.next_player_title)).run {
-            val playerLabel = when (player) {
-                OPlayer -> "X"
-                XPlayer -> "O"
+        onView(withId(R.id.next_player_title))
+            .withText(R.string.next_player_title_label)
+            .isDisplayed()
+
+        onView(withId(R.id.next_player)).run {
+            when (player) {
+                XPlayer -> withText("X")
+                OPlayer -> withText("O")
             }
-            check(
-                matches(
-                    allOf(
-                        withText(playerLabel), isDisplayed()
-                    )
-                )
-            )
+            isDisplayed()
         }
     }
 
     fun hasBoard() {
-        onView(withId(R.id.board)).check(matches(isDisplayed()))
+        onView(withId(R.id.board)).isDisplayed()
     }
 }
