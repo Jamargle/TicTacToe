@@ -8,6 +8,7 @@ import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.isDisplayed
+import com.example.mytest.withImage
 import com.example.mytest.withText
 import org.hamcrest.CoreMatchers.allOf
 
@@ -33,8 +34,8 @@ class BoardRobot {
 
         onView(withId(R.id.next_player)).run {
             when (player) {
-                XPlayer -> withText("X")
-                OPlayer -> withText("O")
+                XPlayer -> withImage(R.drawable.ic_x)
+                OPlayer -> withImage(R.drawable.ic_o)
             }
             isDisplayed()
         }
