@@ -3,7 +3,9 @@ package com.example.mytest.app.features.board
 import androidx.lifecycle.Lifecycle
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.example.mytest.R
 import com.example.mytest.app.MainActivity
+import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.XPlayer
 import org.junit.Rule
 import org.junit.Test
@@ -30,4 +32,47 @@ class BoardFragmentTest {
             hasClearBoard()
         }
     }
+
+    @Test
+    fun onSelectCellsUpdatesThemForEachCurrentPlayerUntilCompletion() {
+        activityScenarioTestRule.scenario.run {
+            moveToState(Lifecycle.State.RESUMED)
+
+            onTurnView {
+                hasNextTurnWith(XPlayer)
+            }
+            onBoardView {
+                hasClearBoard()
+            }
+        }
+
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_9, XPlayer) }
+
+        onTurnView { hasNextTurnWith(OPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_8, OPlayer) }
+
+        onTurnView { hasNextTurnWith(XPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_7, XPlayer) }
+
+        onTurnView { hasNextTurnWith(OPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_6, OPlayer) }
+
+        onTurnView { hasNextTurnWith(XPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_5, XPlayer) }
+
+        onTurnView { hasNextTurnWith(OPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_3, OPlayer) }
+
+        onTurnView { hasNextTurnWith(XPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_2, XPlayer) }
+
+        onTurnView { hasNextTurnWith(OPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_1, OPlayer) }
+
+        onTurnView { hasNextTurnWith(XPlayer) }
+        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_4, XPlayer) }
+    }
+
+    // TODO Add check for completion
+
 }
