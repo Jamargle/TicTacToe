@@ -2,7 +2,7 @@
 <androidx.fragment.app.FragmentContainerView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_fragment_container"
-    android:name="com.example.mytest.app.BoardFragment"
+    android:name="com.example.mytest.app.features.board.BoardFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".app.MainActivity" />

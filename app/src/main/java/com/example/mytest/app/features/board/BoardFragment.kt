@@ -1,9 +1,10 @@
-package com.example.mytest.app
+package com.example.mytest.app.features.board
 
 import android.content.Context
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import com.example.mytest.R
+import com.example.mytest.app.CustomApplication
 import com.example.mytest.app.di.BoardViewModelFactory
 import com.example.mytest.presentation.board.BoardViewModel
 import javax.inject.Inject
