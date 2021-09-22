@@ -230,4 +230,14 @@ class BoardViewModelTest {
         verify { viewState.updateTurn(XPlayer) }
     }
 
+    @Test
+    fun `onRestartButtonClicked displays loading while resetting the board`() = runBlockingTest {
+        coEvery { clearBoardUseCase() } returns Result.success(Unit)
+
+        val viewModel = createBoardViewModel()
+        viewModel.onRestartButtonClicked()
+
+        verify { viewState.showLoading() }
+    }
+
 }

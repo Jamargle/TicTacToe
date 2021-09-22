@@ -8,6 +8,7 @@ import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -16,9 +17,15 @@ import org.junit.Test
 @ExperimentalCoroutinesApi
 class ClearBoardUseCaseTest {
 
+    private val testDispatcher = TestCoroutineDispatcher()
+
     private val boardRepository = mockk<BoardRepository>()
     private val unSelectCellUseCase = mockk<UnselectCellUseCase>()
-    private val clearBoardUseCase = ClearBoardUseCase(boardRepository, unSelectCellUseCase)
+    private val clearBoardUseCase = ClearBoardUseCase(
+        boardRepository,
+        unSelectCellUseCase,
+        testDispatcher
+    )
 
     @Before
     fun setup() {
