@@ -71,8 +71,7 @@ class BoardFragmentTest {
 
         onTurnView { hasNextTurnWith(XPlayer) }
         onBoardView {
-            onClickOnCellSelectsItForPlayer(R.id.cell_4, XPlayer)
-            hasCompletedBoard()
+            clickOnCell(R.id.cell_4)
 
             gameStateIsDraw()
         }
@@ -89,7 +88,7 @@ class BoardFragmentTest {
             onClickOnCellSelectsItForPlayer(R.id.cell_4, OPlayer)
             onClickOnCellSelectsItForPlayer(R.id.cell_2, XPlayer)
             onClickOnCellSelectsItForPlayer(R.id.cell_5, OPlayer)
-            onClickOnCellSelectsItForPlayer(R.id.cell_3, XPlayer)
+            clickOnCell(R.id.cell_3)
 
             gameStateIsWinFor(XPlayer)
         }
@@ -107,7 +106,7 @@ class BoardFragmentTest {
             onClickOnCellSelectsItForPlayer(R.id.cell_2, XPlayer)
             onClickOnCellSelectsItForPlayer(R.id.cell_5, OPlayer)
             onClickOnCellSelectsItForPlayer(R.id.cell_9, XPlayer)
-            onClickOnCellSelectsItForPlayer(R.id.cell_6, OPlayer)
+            clickOnCell(R.id.cell_6)
 
             gameStateIsWinFor(OPlayer)
         }

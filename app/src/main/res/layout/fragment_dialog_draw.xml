@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/default_space"
+        android:layout_marginTop="@dimen/default_space"
+        android:layout_marginEnd="@dimen/default_space"
+        android:layout_marginBottom="@dimen/game_finished_title_bottom_space"
+        android:gravity="center"
+        android:text="@string/game_finished_draw_title"
+        android:textAppearance="?textAppearanceHeadline4" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/default_space"
+        android:gravity="center"
+        android:text="@string/game_finish_with_draw"
+        android:textAppearance="?textAppearanceHeadline6" />
+
+</LinearLayout>

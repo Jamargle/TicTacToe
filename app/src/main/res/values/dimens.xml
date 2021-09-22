@@ -7,4 +7,5 @@
     <dimen name="cell_size">80dp</dimen>
     <dimen name="clear_cell_elevation">30dp</dimen>
     <dimen name="selected_cell_elevation">4dp</dimen>
+    <dimen name="game_finished_title_bottom_space">50dp</dimen>
 </resources>

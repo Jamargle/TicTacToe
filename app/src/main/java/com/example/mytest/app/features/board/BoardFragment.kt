@@ -4,9 +4,10 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import android.widget.Toast
+import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -56,12 +57,8 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     }
     private val onViewStateChange = Observer<ViewStates> {
         when (it) {
-            ViewStates.Finished.Draw -> {
-                Toast.makeText(context, "THIS IS A DRAW!!!", Toast.LENGTH_LONG).show()
-            }
-            is ViewStates.Finished.Win -> {
-                Toast.makeText(context, "${it.winner} wins!!!", Toast.LENGTH_LONG).show()
-            }
+            ViewStates.Finished.Draw -> displayGameDraw()
+            is ViewStates.Finished.Win -> displayGameWonBy(it.winner)
             ViewStates.Loading -> binding.loadingView.visibility = View.VISIBLE
             ViewStates.Playing -> {
                 // NO -OP
@@ -151,6 +148,25 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         OSelected -> R.drawable.ic_o
         XSelected -> R.drawable.ic_x
         Clear -> 0
+    }
+
+    private fun displayGameDraw() {
+        DialogFragment(R.layout.fragment_dialog_draw).apply {
+            isCancelable = false
+        }.showNow(childFragmentManager, "draw")
+    }
+
+    private fun displayGameWonBy(winner: Player) {
+        val winDialog = DialogFragment(R.layout.fragment_dialog_win).apply {
+            isCancelable = false
+        }
+        winDialog.showNow(childFragmentManager, "win")
+
+        val winnerString = when (winner) {
+            OPlayer -> R.string.game_finish_with_winner_o_player
+            XPlayer -> R.string.game_finish_with_winner_x_player
+        }
+        winDialog.view?.findViewById<TextView>(R.id.winner_label)?.text = getString(winnerString)
     }
 
     private fun initApplicationComponent() {

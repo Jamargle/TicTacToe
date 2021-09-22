@@ -9,7 +9,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.example.mytest.R
 import com.example.mytest.domain.model.Cell
-import com.example.mytest.domain.model.Clear
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.Player
@@ -21,7 +20,6 @@ import com.example.mytest.utils.withText
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.not
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 
 inline fun onTurnView(block: BoardRobot.() -> Unit) = BoardRobot().apply(block)
@@ -50,24 +48,6 @@ class BoardRobot {
         }
     }
 
-    fun hasCompletedBoard() {
-        val cellViews = listOf(
-            onView(withId(R.id.cell_1)),
-            onView(withId(R.id.cell_2)),
-            onView(withId(R.id.cell_3)),
-            onView(withId(R.id.cell_4)),
-            onView(withId(R.id.cell_5)),
-            onView(withId(R.id.cell_6)),
-            onView(withId(R.id.cell_7)),
-            onView(withId(R.id.cell_8)),
-            onView(withId(R.id.cell_9)),
-        )
-        cellViews.forEach {
-            it.isDisplayed()
-            it.isSelected()
-        }
-    }
-
     fun hasClearBoard() {
         val cellViews = listOf(
             onView(withId(R.id.cell_1)),
@@ -86,19 +66,11 @@ class BoardRobot {
         }
     }
 
-    fun onClickOnCellSelectsItForPlayer(cellId: Int, player: Player) {
-        onView(withId(cellId))
-            .perform(click())
-            .isSelectedForPlayer(player)
-    }
+    fun clickOnCell(cellId: Int): ViewInteraction = onView(withId(cellId)).perform(click())
 
-    private fun ViewInteraction.isSelected() {
-        check { view, _ ->
-            with(view.tag as? Cell) {
-                assertNotNull(this)
-                assertFalse(this?.state == Clear)
-            }
-        }
+    fun onClickOnCellSelectsItForPlayer(cellId: Int, player: Player) {
+        clickOnCell(cellId)
+            .isSelectedForPlayer(player)
     }
 
     private fun ViewInteraction.isNotSelected() {
