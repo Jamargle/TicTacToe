@@ -10,8 +10,8 @@ import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
 import com.example.mytest.domain.repositories.BoardRepository
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -24,7 +24,7 @@ class OnMemoryBoardRepository
 
     private var boardFlow: MutableStateFlow<Board> = MutableStateFlow(getClearBoard())
 
-    override suspend fun getBoard(): Flow<Board> = boardFlow
+    override suspend fun getBoard(): StateFlow<Board> = boardFlow
 
     override fun updateCellSelection(cell: Cell, player: Player): Result<Unit> {
         if (!cell.isClearInBoard()) {

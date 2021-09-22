@@ -11,7 +11,7 @@ import com.example.mytest.domain.utils.WinnerCheckHelper
 import io.mockk.coEvery
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -29,7 +29,7 @@ class CheckGameStateUseCaseTest {
     @Test
     fun `returns Ongoing if there are clear cells`() = runBlockingTest {
         val expectedBoard = Board(listOf(Cell(0, 0)))
-        coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+        coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
         coEvery { winnerCheckHelper.checkForWinner(expectedBoard) } returns null
 
         assertEquals(GameState.Ongoing, checkGameStateUseCase().getOrNull())
@@ -38,7 +38,7 @@ class CheckGameStateUseCaseTest {
     @Test
     fun `returns Draw if there are not clear cells and no winner`() = runBlockingTest {
         val expectedBoard = Board(listOf(Cell(0, 0, XSelected)))
-        coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+        coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
         coEvery { winnerCheckHelper.checkForWinner(expectedBoard) } returns null
 
         assertEquals(GameState.Draw, checkGameStateUseCase().getOrNull())
@@ -48,7 +48,7 @@ class CheckGameStateUseCaseTest {
     fun `returns XPlayer as winner if there are not clear cells and XPlayer wins`() =
         runBlockingTest {
             val expectedBoard = Board(listOf(Cell(0, 0, XSelected)))
-            coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+            coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
             coEvery { winnerCheckHelper.checkForWinner(expectedBoard) } returns XPlayer
 
             val state = checkGameStateUseCase().getOrNull()
@@ -62,7 +62,7 @@ class CheckGameStateUseCaseTest {
     fun `returns OPlayer as winner if there are not clear cells and OPlayer wins`() =
         runBlockingTest {
             val expectedBoard = Board(listOf(Cell(0, 0, XSelected)))
-            coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+            coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
             coEvery { winnerCheckHelper.checkForWinner(expectedBoard) } returns OPlayer
 
             val state = checkGameStateUseCase().getOrNull()
