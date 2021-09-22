@@ -11,4 +11,6 @@ interface BoardRepository {
 
     fun updateCellSelection(cell: Cell, player: Player): Result<Unit>
 
+    fun clearCellSelection(cell: Cell): Result<Unit>
+
 }

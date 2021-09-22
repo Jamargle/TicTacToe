@@ -63,4 +63,32 @@ class OnMemoryBoardRepositoryTest {
         assertTrue(result.isSuccess)
     }
 
+    @Test
+    fun `clearCellSelection returns failure if given cell does not exist in the board`() =
+        runBlockingTest {
+            val resultXSelected = repository.clearCellSelection(Cell(10, 10, XSelected))
+            assertTrue(resultXSelected.isFailure)
+        }
+
+    @Test
+    fun `clearCellSelection returns success if selection was changed to Clear`() =
+        runBlockingTest {
+            repository.updateCellSelection(Cell(0, 1), XPlayer)
+            repository.updateCellSelection(Cell(0, 2), OPlayer)
+
+            val resultXSelected = repository.clearCellSelection(Cell(0, 1, XSelected))
+            val resultOSelected = repository.clearCellSelection(Cell(0, 2, OSelected))
+
+            assertTrue(resultXSelected.isSuccess)
+            assertTrue(resultOSelected.isSuccess)
+        }
+
+    @Test
+    fun `clearCellSelection returns success if selection was already Clear`() =
+        runBlockingTest {
+            val resultClear = repository.clearCellSelection(Cell(0, 0, Clear))
+
+            assertTrue(resultClear.isSuccess)
+        }
+
 }
