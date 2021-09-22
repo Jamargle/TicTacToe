@@ -70,9 +70,47 @@ class BoardFragmentTest {
         onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_1, OPlayer) }
 
         onTurnView { hasNextTurnWith(XPlayer) }
-        onBoardView { onClickOnCellSelectsItForPlayer(R.id.cell_4, XPlayer) }
+        onBoardView {
+            onClickOnCellSelectsItForPlayer(R.id.cell_4, XPlayer)
+            hasCompletedBoard()
+
+            gameStateIsDraw()
+        }
     }
 
-    // TODO Add check for completion
+    @Test
+    fun onSelectCellsUpdatesThemForEachCurrentPlayerUntilXWins() {
+        activityScenarioTestRule.scenario.run {
+            moveToState(Lifecycle.State.RESUMED)
+        }
+
+        onBoardView {
+            onClickOnCellSelectsItForPlayer(R.id.cell_1, XPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_4, OPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_2, XPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_5, OPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_3, XPlayer)
+
+            gameStateIsWinFor(XPlayer)
+        }
+    }
+
+    @Test
+    fun onSelectCellsUpdatesThemForEachCurrentPlayerUntilOWins() {
+        activityScenarioTestRule.scenario.run {
+            moveToState(Lifecycle.State.RESUMED)
+        }
+
+        onBoardView {
+            onClickOnCellSelectsItForPlayer(R.id.cell_1, XPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_4, OPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_2, XPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_5, OPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_9, XPlayer)
+            onClickOnCellSelectsItForPlayer(R.id.cell_6, OPlayer)
+
+            gameStateIsWinFor(OPlayer)
+        }
+    }
 
 }
