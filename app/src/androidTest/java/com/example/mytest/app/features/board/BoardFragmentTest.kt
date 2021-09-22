@@ -99,6 +99,7 @@ class BoardFragmentTest {
 
             gameStateIsWinFor(XPlayer)
         }
+        onTurnView { hasNotTurnView() }
     }
 
     @Test
@@ -117,6 +118,7 @@ class BoardFragmentTest {
 
             gameStateIsWinFor(OPlayer)
         }
+        onTurnView { hasNotTurnView() }
     }
 
 }

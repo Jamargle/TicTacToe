@@ -5,7 +5,5 @@
     <string name="restart_game_button">Restart the game</string>
     <string name="game_finish_with_winner_x_player">X wins!!</string>
     <string name="game_finish_with_winner_o_player">O wins!!</string>
-    <string name="game_finished_win_title">Congratulations!</string>
-    <string name="game_finished_draw_title">Sorry…</string>
     <string name="game_finish_with_draw">This is a Draw!! More luck next time</string>
 </resources>

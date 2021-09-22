@@ -4,10 +4,8 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
-import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -61,11 +59,16 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
             is ViewStates.Finished.Win -> displayGameWonBy(it.winner)
             ViewStates.Loading -> binding.loadingView.visibility = View.VISIBLE
             ViewStates.Playing -> {
-                // NO -OP
+                binding.gameResult.visibility = View.GONE
+                binding.nextPlayer.visibility = View.VISIBLE
             }
         }
         if (it !is ViewStates.Loading) {
             binding.loadingView.visibility = View.GONE
+        }
+        if (it is ViewStates.Finished) {
+            binding.gameResult.visibility = View.VISIBLE
+            binding.nextPlayer.visibility = View.GONE
         }
     }
     // endregion
@@ -154,22 +157,15 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     }
 
     private fun displayGameDraw() {
-        DialogFragment(R.layout.fragment_dialog_draw).apply {
-            isCancelable = false
-        }.showNow(childFragmentManager, "draw")
+        binding.gameResult.text = getString(R.string.game_finish_with_draw)
     }
 
     private fun displayGameWonBy(winner: Player) {
-        val winDialog = DialogFragment(R.layout.fragment_dialog_win).apply {
-            isCancelable = false
-        }
-        winDialog.showNow(childFragmentManager, "win")
-
         val winnerString = when (winner) {
             OPlayer -> R.string.game_finish_with_winner_o_player
             XPlayer -> R.string.game_finish_with_winner_x_player
         }
-        winDialog.view?.findViewById<TextView>(R.id.winner_label)?.text = getString(winnerString)
+        binding.gameResult.text = getString(winnerString)
     }
 
     private fun initApplicationComponent() {
