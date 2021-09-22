@@ -5,19 +5,21 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import androidx.test.espresso.matcher.ViewMatchers.withTagValue
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.example.mytest.R
+import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.OPlayer
+import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
+import com.example.mytest.domain.model.XSelected
 import com.example.mytest.utils.isDisplayed
 import com.example.mytest.utils.withCompoundDrawable
 import com.example.mytest.utils.withText
 import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 
 inline fun onTurnView(block: BoardRobot.() -> Unit) = BoardRobot().apply(block)
 
@@ -64,9 +66,9 @@ class BoardRobot {
     }
 
     fun onClickOnCellSelectsItForPlayer(cellId: Int, player: Player) {
-        onView(withId(cellId)).perform(click())
-
-        onView(withParent(withId(cellId))).isSelectedForPlayer(player)
+        onView(withId(cellId))
+            .perform(click())
+            .isSelectedForPlayer(player)
     }
 
     private fun ViewInteraction.isNotSelected() {
@@ -81,10 +83,15 @@ class BoardRobot {
     }
 
     private fun ViewInteraction.isSelectedForPlayer(player: Player) {
-        val playerSelectionDrawable = when (player) {
-            XPlayer -> R.drawable.ic_x
-            OPlayer -> R.drawable.ic_o
+        val playerSelection = when (player) {
+            XPlayer -> XSelected
+            OPlayer -> OSelected
         }
-        check(matches(withTagValue(equalTo(playerSelectionDrawable))))
+        check { view, _ ->
+            with(view.tag as? Cell) {
+                assertNotNull(this)
+                assertEquals(this?.state, playerSelection)
+            }
+        }
     }
 }
