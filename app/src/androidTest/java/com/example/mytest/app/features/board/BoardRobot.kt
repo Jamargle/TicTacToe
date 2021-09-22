@@ -3,8 +3,8 @@ package com.example.mytest.app.features.board
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.doesNotExist
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import com.example.mytest.R
@@ -46,6 +46,10 @@ class BoardRobot {
             }
             isDisplayed()
         }
+    }
+
+    fun hasNotTurnView() {
+        onView(withId(R.id.next_player)).check(doesNotExist())
     }
 
     fun hasClearBoard() {
@@ -98,8 +102,8 @@ class BoardRobot {
     }
 
     fun gameStateIsDraw() {
-        onView(withText(R.string.game_finish_with_draw))
-            .inRoot(isDialog())
+        onView(withId(R.id.game_result))
+            .withText(R.string.game_finish_with_draw)
             .isDisplayed()
     }
 
@@ -108,8 +112,17 @@ class BoardRobot {
             OPlayer -> R.string.game_finish_with_winner_o_player
             XPlayer -> R.string.game_finish_with_winner_x_player
         }
-        onView(withText(expectedString))
-            .inRoot(isDialog())
+
+        onView(withId(R.id.game_result))
+            .withText(expectedString)
             .isDisplayed()
+    }
+
+    fun onResetGameRestartsTheBoard() {
+        onView(withId(R.id.restart_game_button))
+            .withText(R.string.restart_game_button)
+            .perform(click())
+
+        hasClearBoard()
     }
 }

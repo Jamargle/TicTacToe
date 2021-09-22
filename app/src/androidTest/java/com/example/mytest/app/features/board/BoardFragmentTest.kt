@@ -7,6 +7,7 @@ import com.example.mytest.R
 import com.example.mytest.app.MainActivity
 import com.example.mytest.domain.model.OPlayer
 import com.example.mytest.domain.model.XPlayer
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,6 +17,12 @@ class BoardFragmentTest {
 
     @get:Rule
     val activityScenarioTestRule = ActivityScenarioRule(MainActivity::class.java)
+
+    @After
+    fun tearDown() {
+        onBoardView { onResetGameRestartsTheBoard() }
+        onTurnView { hasNextTurnWith(XPlayer) }
+    }
 
     @Test
     fun displayBoardScreen() {
@@ -72,9 +79,9 @@ class BoardFragmentTest {
         onTurnView { hasNextTurnWith(XPlayer) }
         onBoardView {
             clickOnCell(R.id.cell_4)
-
             gameStateIsDraw()
         }
+        onTurnView { hasNotTurnView() }
     }
 
     @Test
