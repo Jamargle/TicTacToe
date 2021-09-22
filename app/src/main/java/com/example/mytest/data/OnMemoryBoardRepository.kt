@@ -26,14 +26,21 @@ class OnMemoryBoardRepository
 
     override suspend fun getBoard(): StateFlow<Board> = boardFlow
 
-    override fun updateCellSelection(cell: Cell, player: Player): Result<Unit> {
+    override fun updateCellSelection(cell: Cell, player: Player): Result<Unit> =
         if (!cell.isClearInBoard()) {
-            return Result.failure(IllegalArgumentException("Cell was already selected"))
+            Result.failure(IllegalArgumentException("Cell was already selected"))
         } else {
             applySelectedStateForPlayer(cell, player)
         }
-        return Result.success(Unit)
-    }
+
+    override fun clearCellSelection(cell: Cell): Result<Unit> =
+        boardFlow.value.getCell(cell)?.let { cellToUnSelect ->
+            if (cellToUnSelect.state == Clear) {
+                Result.success(Unit)
+            } else {
+                clearSelectionForCell(cellToUnSelect)
+            }
+        } ?: Result.failure(Throwable("Something went wrong while unselecting cell $cell"))
 
     private fun getClearBoard(): Board {
         val clearCells = mutableListOf<Cell>()
@@ -53,7 +60,7 @@ class OnMemoryBoardRepository
      * at the end of the list with the new state.
      * This helps to know the last movement.
      */
-    private fun applySelectedStateForPlayer(cell: Cell, player: Player) {
+    private fun applySelectedStateForPlayer(cell: Cell, player: Player): Result<Unit> {
         with(boardFlow.value.cells.toMutableList()) {
             if (remove(cell)) {
                 val selectedCell = cell.copy(
@@ -64,7 +71,24 @@ class OnMemoryBoardRepository
                 )
                 add(selectedCell)
                 boardFlow.value = Board(this)
+                return Result.success(Unit)
             }
         }
+        return Result.failure(Throwable("The cell could not be selected"))
+    }
+
+    /**
+     * Removes the cell that changes state. Then is added at the beginning of the list
+     * of cells so that the last movement is still the last cell in the list.
+     */
+    private fun clearSelectionForCell(cell: Cell): Result<Unit> {
+        with(boardFlow.value.cells.toMutableList()) {
+            if (remove(cell)) {
+                add(0, cell.copy(state = Clear))
+                boardFlow.value = Board(this)
+                return Result.success(Unit)
+            }
+        }
+        return Result.failure(Throwable("The cell could not be unselected"))
     }
 }
