@@ -1,7 +1,8 @@
-package com.example.mytest.di
+package com.example.mytest.app.di
 
 import android.content.Context
-import com.example.mytest.MainActivity
+import com.example.mytest.app.features.board.BoardFragment
+import com.example.mytest.app.MainActivity
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -9,7 +10,8 @@ import javax.inject.Singleton
 @Singleton
 @Component(
     modules = [
-        ApplicationModule::class
+        ApplicationModule::class,
+        RepositoryModule::class
     ]
 )
 interface ApplicationComponent {
@@ -20,5 +22,7 @@ interface ApplicationComponent {
     }
 
     fun inject(mainActivity: MainActivity)
+
+    fun inject(boardFragment: BoardFragment)
 
 }

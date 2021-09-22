@@ -10,7 +10,7 @@ import io.mockk.coEvery
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertTrue
 import org.junit.Test
@@ -24,7 +24,7 @@ class SelectCellUseCaseTest {
     @Test
     fun `returns failure if cell does not exist in the board`() = runBlockingTest {
         val expectedBoard = Board(listOf(Cell(0, 0, Clear)))
-        coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+        coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
         assertTrue(selectCellUseCase(Cell(1, 1), XPlayer).isFailure)
     }
 
@@ -36,7 +36,7 @@ class SelectCellUseCaseTest {
     @Test
     fun `returns failure if cell is already selected in the board`() = runBlockingTest {
         val expectedBoard = Board(listOf(Cell(0, 0, XSelected)))
-        coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+        coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
         assertTrue(selectCellUseCase(Cell(0, 0), XPlayer).isFailure)
     }
 
@@ -45,7 +45,7 @@ class SelectCellUseCaseTest {
         runBlockingTest {
             val givenCell = Cell(0, 0, Clear)
             val expectedBoard = Board(listOf(givenCell))
-            coEvery { boardRepository.getBoard() } returns flowOf(expectedBoard)
+            coEvery { boardRepository.getBoard() } returns MutableStateFlow(expectedBoard)
             every { boardRepository.updateCellSelection(givenCell, XPlayer) } returns
                     Result.success(Unit)
 

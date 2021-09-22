@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Cell" parent="Widget.MaterialComponents.CardView">
+        <item name="cardElevation">@dimen/clear_cell_elevation</item>
+        <item name="android:clickable">true</item>
+        <item name="android:focusable">true</item>
+    </style>
+</resources>
