@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.example.mytest.app.di.ApplicationModule.Companion.BACKGROUND_DISPATCHER
 import com.example.mytest.domain.usecases.CheckGameStateUseCase
+import com.example.mytest.domain.usecases.ClearBoardUseCase
 import com.example.mytest.domain.usecases.GetBoardStateUseCase
 import com.example.mytest.domain.usecases.GetNextPlayerUseCase
 import com.example.mytest.domain.usecases.SelectCellUseCase
@@ -22,6 +23,7 @@ class BoardViewModelFactory
     private val checkGameStateUseCase: CheckGameStateUseCase,
     private val getNextPlayerUseCase: GetNextPlayerUseCase,
     private val selectCellUseCase: SelectCellUseCase,
+    private val clearBoardUseCase: ClearBoardUseCase,
     @Named(BACKGROUND_DISPATCHER) private val backgroundDispatcher: CoroutineDispatcher
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
@@ -32,6 +34,7 @@ class BoardViewModelFactory
             checkGameStateUseCase,
             getNextPlayerUseCase,
             selectCellUseCase,
+            clearBoardUseCase,
             backgroundDispatcher
         ) as? T
             ?: throw IllegalArgumentException("This factory can only create BoardViewModel instances")

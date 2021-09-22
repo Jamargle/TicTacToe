@@ -12,6 +12,7 @@ import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.usecases.CheckGameStateUseCase
+import com.example.mytest.domain.usecases.ClearBoardUseCase
 import com.example.mytest.domain.usecases.GetBoardStateUseCase
 import com.example.mytest.domain.usecases.GetNextPlayerUseCase
 import com.example.mytest.domain.usecases.SelectCellUseCase
@@ -43,6 +44,7 @@ class BoardViewModelTest {
     private val getBoardState = mockk<GetBoardStateUseCase>()
     private val checkGameState = mockk<CheckGameStateUseCase>()
     private val selectCell = mockk<SelectCellUseCase>()
+    private val clearBoardUseCase = mockk<ClearBoardUseCase>()
 
     private var currentPlayer: Player = XPlayer
     private val getNextPlayer = mockk<GetNextPlayerUseCase> {
@@ -57,7 +59,8 @@ class BoardViewModelTest {
         getBoardState,
         checkGameState,
         getNextPlayer,
-        selectCell
+        selectCell,
+        clearBoardUseCase
     )
 
     @Before
@@ -214,6 +217,17 @@ class BoardViewModelTest {
         viewModel.onCellClicked(givenCell)
 
         verify(exactly = 0) { viewState.updateTurn(OPlayer) }
+    }
+
+    @Test
+    fun `onRestartButtonClicked clears the board and sets the turn to XPlayer`() = runBlockingTest {
+        coEvery { clearBoardUseCase() } returns Result.success(Unit)
+
+        val viewModel = createBoardViewModel()
+        viewModel.onRestartButtonClicked()
+
+        coVerify { clearBoardUseCase() }
+        verify { viewState.updateTurn(XPlayer) }
     }
 
 }

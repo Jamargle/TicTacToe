@@ -7,7 +7,9 @@ import com.example.mytest.domain.model.Board
 import com.example.mytest.domain.model.Cell
 import com.example.mytest.domain.model.GameState
 import com.example.mytest.domain.model.Player
+import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.usecases.CheckGameStateUseCase
+import com.example.mytest.domain.usecases.ClearBoardUseCase
 import com.example.mytest.domain.usecases.GetBoardStateUseCase
 import com.example.mytest.domain.usecases.GetNextPlayerUseCase
 import com.example.mytest.domain.usecases.SelectCellUseCase
@@ -23,6 +25,7 @@ class BoardViewModel(
     private val checkGameStateUseCase: CheckGameStateUseCase,
     private val getNextPlayerUseCase: GetNextPlayerUseCase,
     private val selectCellUseCase: SelectCellUseCase,
+    private val clearBoardUseCase: ClearBoardUseCase,
     private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -58,6 +61,13 @@ class BoardViewModel(
      * It lets the [BoardViewModel] consumers subscribe to get player turn updates.
      */
     fun getPlayerTurnState(): LiveData<Player> = viewState.playerTurn
+
+    fun onRestartButtonClicked() {
+        viewState.showLoading()
+        viewModelScope.launch {
+            clearBoardUseCase().getOrNull()?.let { viewState.updateTurn(XPlayer) }
+        }
+    }
 
     fun onCellClicked(cell: Cell) {
         viewModelScope.launch {
