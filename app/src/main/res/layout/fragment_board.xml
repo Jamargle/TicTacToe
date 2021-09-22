@@ -172,7 +172,7 @@
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
             android:layout_margin="@dimen/default_small_space"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/board_bottom_barrier"
             app:layout_constraintEnd_toStartOf="@id/cell_8"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cell_4">
@@ -191,7 +191,7 @@
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
             android:layout_margin="@dimen/default_small_space"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/board_bottom_barrier"
             app:layout_constraintEnd_toStartOf="@id/cell_9"
             app:layout_constraintStart_toEndOf="@id/cell_7"
             app:layout_constraintTop_toBottomOf="@id/cell_5">
@@ -210,7 +210,7 @@
             android:layout_width="@dimen/cell_size"
             android:layout_height="@dimen/cell_size"
             android:layout_margin="@dimen/default_small_space"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toBottomOf="@id/board_bottom_barrier"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/cell_8"
             app:layout_constraintTop_toBottomOf="@id/cell_6">
@@ -222,6 +222,25 @@
                 tools:src="@drawable/ic_x" />
 
         </com.google.android.material.card.MaterialCardView>
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/board_bottom_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:barrierDirection="top"
+            app:constraint_referenced_ids="restart_game_button" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/restart_game_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/default_space"
+            android:text="@string/restart_game_button"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/board_bottom_barrier" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

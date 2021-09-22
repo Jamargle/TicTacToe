@@ -80,6 +80,9 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         _binding = FragmentBoardBinding.bind(view)
         initViewStateObservers()
         initCellClickListeners()
+        binding.restartGameButton.setOnClickListener {
+            boardViewModel.onRestartButtonClicked()
+        }
     }
 
     override fun onDestroyView() {

@@ -2,6 +2,7 @@
     <string name="app_name">MyTest</string>
     <string name="board_screen_title">TIC TAC TOE</string>
     <string name="next_player_title_label">Next Player:</string>
+    <string name="restart_game_button">Restart the game</string>
     <string name="game_finish_with_winner_x_player">X wins!!</string>
     <string name="game_finish_with_winner_o_player">O wins!!</string>
     <string name="game_finished_win_title">Congratulations!</string>
