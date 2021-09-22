@@ -141,9 +141,8 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
 
     private fun getElevationForState(state: CellState): Float {
         val elevationDimension = when (state) {
-            Clear -> R.dimen.cell_elevation
-            OSelected -> R.dimen.cell_elevation
-            XSelected -> R.dimen.cell_elevation
+            Clear -> R.dimen.clear_cell_elevation
+            else -> R.dimen.selected_cell_elevation
         }
         return resources.getDimension(elevationDimension)
     }
