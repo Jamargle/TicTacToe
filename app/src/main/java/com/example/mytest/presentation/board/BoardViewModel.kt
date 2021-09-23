@@ -69,6 +69,10 @@ class BoardViewModel(
         }
     }
 
+    fun onGeneralErrorPositiveButtonClicked() {
+        onRestartButtonClicked()
+    }
+
     fun onCellClicked(cell: Cell) {
         viewModelScope.launch {
             val currentPlayer = getNextPlayerUseCase()
@@ -78,21 +82,22 @@ class BoardViewModel(
 
     private suspend fun selectCell(cell: Cell, currentPlayer: Player) {
         selectCellUseCase(cell, currentPlayer).fold(
-            onFailure = {
-                println("Error selecting the cell $cell")
-            },
-            onSuccess = { checkGameState(currentPlayer) }
+            onSuccess = { checkGameState(currentPlayer) },
+            onFailure = { viewState.displayErrorMessage() }
         )
     }
 
     private suspend fun checkGameState(currentPlayer: Player) {
-        checkGameStateUseCase().getOrNull()?.let { state ->
-            when (state) {
-                GameState.Draw -> viewState.displayDrawGame()
-                GameState.Ongoing -> viewState.updateTurn(getNextPlayerUseCase())
-                is GameState.Winner -> viewState.displayWinner(currentPlayer)
-            }
-        }
+        checkGameStateUseCase().fold(
+            onSuccess = { state ->
+                when (state) {
+                    GameState.Draw -> viewState.displayDrawGame()
+                    GameState.Ongoing -> viewState.updateTurn(getNextPlayerUseCase())
+                    is GameState.Winner -> viewState.displayWinner(currentPlayer)
+                }
+            },
+            onFailure = { viewState.displayErrorMessage() }
+        )
     }
 
 }

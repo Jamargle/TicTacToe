@@ -98,6 +98,8 @@ class BoardFragmentTest {
             clickOnCell(R.id.cell_3)
 
             gameStateIsWinFor(XPlayer)
+
+            cannotContinuePlayingTheGame()
         }
         onTurnView { hasNotTurnView() }
     }
@@ -117,6 +119,8 @@ class BoardFragmentTest {
             clickOnCell(R.id.cell_6)
 
             gameStateIsWinFor(OPlayer)
+
+            cannotContinuePlayingTheGame()
         }
         onTurnView { hasNotTurnView() }
     }

@@ -14,7 +14,9 @@ import com.example.mytest.domain.model.OSelected
 import com.example.mytest.domain.model.Player
 import com.example.mytest.domain.model.XPlayer
 import com.example.mytest.domain.model.XSelected
+import com.example.mytest.utils.isClickable
 import com.example.mytest.utils.isDisplayed
+import com.example.mytest.utils.isNotClickable
 import com.example.mytest.utils.withCompoundDrawable
 import com.example.mytest.utils.withText
 import org.hamcrest.CoreMatchers.allOf
@@ -67,6 +69,7 @@ class BoardRobot {
         cellViews.forEach {
             it.isDisplayed()
             it.isNotSelected()
+            it.isClickable()
         }
     }
 
@@ -124,5 +127,22 @@ class BoardRobot {
             .perform(click())
 
         hasClearBoard()
+    }
+
+    fun cannotContinuePlayingTheGame() {
+        val cellViews = listOf(
+            onView(withId(R.id.cell_1)),
+            onView(withId(R.id.cell_2)),
+            onView(withId(R.id.cell_3)),
+            onView(withId(R.id.cell_4)),
+            onView(withId(R.id.cell_5)),
+            onView(withId(R.id.cell_6)),
+            onView(withId(R.id.cell_7)),
+            onView(withId(R.id.cell_8)),
+            onView(withId(R.id.cell_9)),
+        )
+        cellViews.forEach {
+            it.isNotClickable()
+        }
     }
 }

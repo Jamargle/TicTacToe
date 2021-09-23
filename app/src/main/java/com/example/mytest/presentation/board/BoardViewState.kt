@@ -27,4 +27,6 @@ class BoardViewState
     fun displayDrawGame() = viewState.postValue(ViewStates.Finished.Draw)
 
     fun displayWinner(winner: Player) = viewState.postValue(ViewStates.Finished.Win(winner))
+
+    fun displayErrorMessage() = viewState.postValue(ViewStates.Finished.Error)
 }

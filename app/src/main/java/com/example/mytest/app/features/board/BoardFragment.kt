@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageView
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
@@ -62,6 +63,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
                 binding.gameResult.visibility = View.GONE
                 binding.nextPlayer.visibility = View.VISIBLE
             }
+            ViewStates.Finished.Error -> displayGeneralError()
         }
         if (it !is ViewStates.Loading) {
             binding.loadingView.visibility = View.GONE
@@ -69,6 +71,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         if (it is ViewStates.Finished) {
             binding.gameResult.visibility = View.VISIBLE
             binding.nextPlayer.visibility = View.GONE
+            disableCellSelection()
         }
     }
     // endregion
@@ -113,6 +116,18 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         binding.cell9.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
     }
 
+    private fun disableCellSelection() {
+        binding.cell1.isClickable = false
+        binding.cell2.isClickable = false
+        binding.cell3.isClickable = false
+        binding.cell4.isClickable = false
+        binding.cell5.isClickable = false
+        binding.cell6.isClickable = false
+        binding.cell7.isClickable = false
+        binding.cell8.isClickable = false
+        binding.cell9.isClickable = false
+    }
+
     private fun updateBoard(board: Board) {
         board.cells.forEach {
             val cellView = when {
@@ -137,6 +152,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         cellView.cardElevation = getElevationForState(cell.state)
 
         cellView.tag = cell
+        cellView.isClickable = cell.state == Clear
         with(cellView.children.first() as ImageView) {
             setImageResource(getDrawableForState(cell.state))
         }
@@ -166,6 +182,18 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
             XPlayer -> R.string.game_finish_with_winner_x_player
         }
         binding.gameResult.text = getString(winnerString)
+    }
+
+    private fun displayGeneralError() {
+        with(requireContext()) {
+            AlertDialog.Builder(this)
+                .setTitle(R.string.general_error_title)
+                .setMessage(R.string.general_error_message)
+                .setPositiveButton(R.string.general_error_positive_button) { _, _ ->
+                    boardViewModel.onGeneralErrorPositiveButtonClicked()
+                }
+                .show()
+        }
     }
 
     private fun initApplicationComponent() {
