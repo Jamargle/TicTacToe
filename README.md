@@ -40,3 +40,5 @@ The rules are described below :
 ## Screenshots
 ![phone1|small](screenshots/phone_empty.png)
 ![phone1|small](screenshots/phone_draw.png)
+![phone1|small](screenshots/phone_X_wins.png)
+![phone1|small](screenshots/phone_O_wins.png)
