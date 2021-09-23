@@ -69,6 +69,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         if (it is ViewStates.Finished) {
             binding.gameResult.visibility = View.VISIBLE
             binding.nextPlayer.visibility = View.GONE
+            disableCellSelection()
         }
     }
     // endregion
@@ -113,6 +114,18 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         binding.cell9.setOnClickListener { boardViewModel.onCellClicked(it.tag as Cell) }
     }
 
+    private fun disableCellSelection() {
+        binding.cell1.isClickable = false
+        binding.cell2.isClickable = false
+        binding.cell3.isClickable = false
+        binding.cell4.isClickable = false
+        binding.cell5.isClickable = false
+        binding.cell6.isClickable = false
+        binding.cell7.isClickable = false
+        binding.cell8.isClickable = false
+        binding.cell9.isClickable = false
+    }
+
     private fun updateBoard(board: Board) {
         board.cells.forEach {
             val cellView = when {
@@ -137,6 +150,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         cellView.cardElevation = getElevationForState(cell.state)
 
         cellView.tag = cell
+        cellView.isClickable = cell.state == Clear
         with(cellView.children.first() as ImageView) {
             setImageResource(getDrawableForState(cell.state))
         }
