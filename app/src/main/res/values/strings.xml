@@ -6,4 +6,7 @@
     <string name="game_finish_with_winner_x_player">X wins!!</string>
     <string name="game_finish_with_winner_o_player">O wins!!</string>
     <string name="game_finish_with_draw">This is a Draw!! More luck next time</string>
+    <string name="general_error_title">Sorry…</string>
+    <string name="general_error_message">There has been an error and you have to restart the game</string>
+    <string name="general_error_positive_button">Restart</string>
 </resources>

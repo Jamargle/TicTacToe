@@ -28,7 +28,5 @@ class BoardViewState
 
     fun displayWinner(winner: Player) = viewState.postValue(ViewStates.Finished.Win(winner))
 
-    fun displayErrorMessage() {
-        // TODO("Not yet implemented")
-    }
+    fun displayErrorMessage() = viewState.postValue(ViewStates.Finished.Error)
 }
