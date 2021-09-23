@@ -20,9 +20,6 @@ def _versions = [
         // Dagger 2
         daggerVersion                    : '2.36',
 
-        // Coil
-        coilVersion                      : '1.3.2',
-
         // CanaryLeak
         canaryLeakVersion                : '2.7',
 
