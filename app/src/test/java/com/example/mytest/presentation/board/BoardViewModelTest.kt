@@ -157,6 +157,20 @@ class BoardViewModelTest {
         }
 
     @Test
+    fun `onCellClicked displays error message if selecting cell returns failure`() =
+        runBlockingTest {
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, any()) } returns Result.failure(Throwable(""))
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            verify { viewState.displayErrorMessage() }
+        }
+
+    @Test
     fun `onCellClicked displays Draw state of the game when checkGameState returns Draw`() =
         runBlockingTest {
             val expectedPlayer = XPlayer
@@ -206,17 +220,18 @@ class BoardViewModelTest {
         }
 
     @Test
-    fun `onCellClicked does nothing if the given cell is already selected`() = runBlockingTest {
+    fun `onCellClicked displays error if checking the game returns failure`() = runBlockingTest {
         val expectedPlayer = XPlayer
         coEvery { getNextPlayer() } returns expectedPlayer
         val givenCell = Cell(0, 0, OSelected)
-        coEvery { selectCell(givenCell, expectedPlayer) } returns
-                Result.failure(Throwable(""))
+        coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+        coEvery { checkGameState() } returns Result.failure(Throwable(""))
 
         val viewModel = createBoardViewModel()
         viewModel.onCellClicked(givenCell)
 
         verify(exactly = 0) { viewState.updateTurn(OPlayer) }
+        verify { viewState.displayErrorMessage() }
     }
 
     @Test
