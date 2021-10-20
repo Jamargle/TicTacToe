@@ -1,7 +1,6 @@
 # MyTest
 
-This is the code challenge for the BNP interview process.
-It is a basic application that allows to users to play Tic-Tac-Toe in an Android device.
+This is a basic application that allows to users to play Tic-Tac-Toe in an Android device.
 
 ## How to compile and run the code
 
