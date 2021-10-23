@@ -1,4 +1,4 @@
-# MyTest
+# TicTacToe
 
 This is a basic application that allows to users to play Tic-Tac-Toe in an Android device.
 
