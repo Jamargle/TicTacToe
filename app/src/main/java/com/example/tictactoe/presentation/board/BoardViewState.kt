@@ -9,20 +9,20 @@ class BoardViewState
 @Inject constructor() {
 
     internal val viewState: MutableLiveData<ViewStates> = MutableLiveData()
-    internal val boardState: MutableLiveData<Board> = MutableLiveData()
+    internal val boardState: MutableLiveData<Board> = MutableLiveData(Board(emptyList())) // TODO refactor to StateFlow for this to not be null
+
+    @Deprecated("It will be removed when view state and game state get unified")
     internal val playerTurn: MutableLiveData<Player> = MutableLiveData()
 
     fun showLoading() = viewState.postValue(ViewStates.Loading)
 
     fun updateBoard(board: Board) {
-        viewState.postValue(ViewStates.Playing)
-        boardState.postValue(board)
+        boardState.value = board
     }
 
-    fun updateTurn(player: Player) {
-        viewState.postValue(ViewStates.Playing)
-        playerTurn.postValue(player)
-    }
+    fun updateTurnToXPlayer() = viewState.postValue(ViewStates.XPlaying)
+
+    fun updateTurnToOPlayer() = viewState.postValue(ViewStates.OPlaying)
 
     fun displayDrawGame() = viewState.postValue(ViewStates.Finished.Draw)
 

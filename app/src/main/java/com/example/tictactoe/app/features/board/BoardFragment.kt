@@ -59,7 +59,8 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
             ViewStates.Finished.Draw -> displayGameDraw()
             is ViewStates.Finished.Win -> displayGameWonBy(it.winner)
             ViewStates.Loading -> binding.loadingView.visibility = View.VISIBLE
-            ViewStates.Playing -> {
+            ViewStates.OPlaying,
+            ViewStates.XPlaying -> {
                 binding.gameResult.visibility = View.GONE
                 binding.nextPlayer.visibility = View.VISIBLE
             }

@@ -86,7 +86,7 @@ class BoardViewModelTest {
     fun `viewModel displays next players turn`() = runBlockingTest {
         coEvery { getNextPlayer() } returns XPlayer
         createBoardViewModel()
-        verify { viewState.updateTurn(XPlayer) }
+        verify { viewState.updateTurnToXPlayer() }
     }
 
     @Test
@@ -204,7 +204,6 @@ class BoardViewModelTest {
     fun `onCellClicked updates turn when checkGameState returns Ongoing`() =
         runBlockingTest {
             val currentPlayer = XPlayer
-            val nextPlayer = OPlayer
             val givenCell = Cell(0, 0, Clear)
             coEvery { selectCell(givenCell, currentPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
@@ -212,7 +211,7 @@ class BoardViewModelTest {
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
 
-            coVerify { viewState.updateTurn(nextPlayer) }
+            coVerify { viewState.updateTurnToOPlayer() }
             coVerify(exactly = 0) {
                 viewState.displayDrawGame()
                 viewState.displayWinner(any())
@@ -230,7 +229,7 @@ class BoardViewModelTest {
         val viewModel = createBoardViewModel()
         viewModel.onCellClicked(givenCell)
 
-        verify(exactly = 0) { viewState.updateTurn(OPlayer) }
+        verify(exactly = 0) { viewState.updateTurnToOPlayer() }
         verify { viewState.displayErrorMessage() }
     }
 
@@ -242,7 +241,7 @@ class BoardViewModelTest {
         viewModel.onRestartButtonClicked()
 
         coVerify { clearBoardUseCase() }
-        verify { viewState.updateTurn(XPlayer) }
+        verify { viewState.updateTurnToXPlayer() }
     }
 
     @Test
@@ -265,7 +264,7 @@ class BoardViewModelTest {
         coVerify { clearBoardUseCase() }
         verify {
             viewState.showLoading()
-            viewState.updateTurn(XPlayer)
+            viewState.updateTurnToXPlayer()
         }
     }
 

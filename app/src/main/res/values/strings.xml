@@ -2,6 +2,9 @@
     <string name="app_name">TicTacToe</string>
     <string name="board_screen_title">TIC TAC TOE</string>
     <string name="next_player_title_label">Next Player:</string>
+    <string name="next_player_title_label_X">Next Player: X</string>
+    <string name="next_player_title_label_O">Next Player: O</string>
+    <string name="game_state_loading">Loading…</string>
     <string name="restart_game_button">Restart the game</string>
     <string name="game_finish_with_winner_x_player">X wins!!</string>
     <string name="game_finish_with_winner_o_player">O wins!!</string>
