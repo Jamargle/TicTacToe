@@ -6,17 +6,18 @@ def _versions = [
         minSdkVersion                    : 23,
 
         //Android
-        coreKtxVersion                   : '1.6.0',
+        coreKtxVersion                   : '1.7.0',
         fragmentKtxVersion               : '1.3.6',
         appCompatVersion                 : '1.3.1',
+        composeActivityVersion           : '1.4.0',
         composeVersion                   : '1.1.0-beta02',
         materialVersion                  : '1.4.0',
-        viewModelKtxVersion              : '2.3.1',
+        viewModelKtxVersion              : '2.4.0',
         constraintLayoutVersion          : '2.1.1',
         archCoreVersion                  : '2.1.0',
 
         // Coroutines
-        coroutinesVersion                : '1.5.1',
+        coroutinesVersion                : '1.5.2',
 
         // Dagger 2
         daggerVersion                    : '2.36',

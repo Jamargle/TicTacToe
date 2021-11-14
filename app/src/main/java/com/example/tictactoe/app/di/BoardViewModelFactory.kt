@@ -27,7 +27,7 @@ class BoardViewModelFactory
     @Named(BACKGROUND_DISPATCHER) private val backgroundDispatcher: CoroutineDispatcher
 ) : ViewModelProvider.Factory {
     @Suppress("UNCHECKED_CAST")
-    override fun <T : ViewModel?> create(modelClass: Class<T>) =
+    override fun <T : ViewModel> create(modelClass: Class<T>) =
         BoardViewModel(
             boardViewState,
             getBoardStateUseCase,
