@@ -57,7 +57,7 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
     private val onViewStateChange = Observer<ViewStates> {
         when (it) {
             ViewStates.Finished.Draw -> displayGameDraw()
-            is ViewStates.Finished.Win -> displayGameWonBy(it.winner)
+            is ViewStates.Finished.Win -> displayGameWonBy(it)
             ViewStates.Loading -> binding.loadingView.visibility = View.VISIBLE
             ViewStates.OPlaying,
             ViewStates.XPlaying -> {
@@ -177,12 +177,8 @@ class BoardFragment : Fragment(R.layout.fragment_board) {
         binding.gameResult.text = getString(R.string.game_finish_with_draw)
     }
 
-    private fun displayGameWonBy(winner: Player) {
-        val winnerString = when (winner) {
-            OPlayer -> R.string.game_finish_with_winner_o_player
-            XPlayer -> R.string.game_finish_with_winner_x_player
-        }
-        binding.gameResult.text = getString(winnerString)
+    private fun displayGameWonBy(winnerState: ViewStates.Finished.Win) {
+        binding.gameResult.text = getString(winnerState.gameStateLabelRes)
     }
 
     private fun displayGeneralError() {

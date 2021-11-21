@@ -127,7 +127,10 @@ class BoardViewModel(
                 when (state) {
                     GameState.Draw -> viewState.displayDrawGame()
                     GameState.Ongoing -> updateTurnForPlayer(getNextPlayerUseCase())
-                    is GameState.Winner -> viewState.displayWinner(currentPlayer)
+                    is GameState.Winner -> when (currentPlayer) {
+                        OPlayer -> viewState.displayOPlayerWinner()
+                        XPlayer -> viewState.displayXPlayerWinner()
+                    }
                 }
                 isEnabledBoardInteraction.value = state is GameState.Ongoing
             },

@@ -210,7 +210,7 @@ class BoardViewModelTest {
         }
 
     @Test
-    fun `onCellClicked displays Winner with player when checkGameState returns Winner`() =
+    fun `onCellClicked displays XPlayer Winner when checkGameState returns Winner for XPlayer`() =
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
@@ -221,7 +221,22 @@ class BoardViewModelTest {
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
 
-            coVerify { viewState.displayWinner(expectedPlayer) }
+            coVerify { viewState.displayXPlayerWinner() }
+        }
+
+    @Test
+    fun `onCellClicked displays OPlayer Winner when checkGameState returns Winner for OPlayer`() =
+        runBlockingTest {
+            val expectedPlayer = OPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Winner(expectedPlayer))
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            coVerify { viewState.displayOPlayerWinner() }
         }
 
     @Test
@@ -252,7 +267,8 @@ class BoardViewModelTest {
             coVerify { viewState.updateTurnToOPlayer() }
             coVerify(exactly = 0) {
                 viewState.displayDrawGame()
-                viewState.displayWinner(any())
+                viewState.displayXPlayerWinner()
+                viewState.displayOPlayerWinner()
             }
         }
 
