@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -25,7 +26,9 @@ fun Cell(
     onCellClick: (CellUiData) -> Unit
 ) {
     Card(
-        shape = MaterialTheme.shapes.medium,
+        shape = MaterialTheme.shapes.medium.copy(
+            all = CornerSize(dimensionResource(id = R.dimen.cell_corner_size))
+        ),
         elevation = dimensionResource(id = cellData.state.cellElevation),
         modifier = Modifier
             .height(dimensionResource(id = R.dimen.cell_size))
@@ -34,8 +37,7 @@ fun Cell(
             .clickable(
                 enabled = cellData.state == Clear,
                 onClick = { onCellClick(cellData) }
-            )
-    ) {
+            )) {
         if (cellData.state != Clear) {
             Image(
                 painter = painterResource(id = cellData.state.selectionImage),
@@ -46,6 +48,7 @@ fun Cell(
     }
 }
 
+// region previews
 @Preview("Cell Selected by XPlayer")
 @Composable
 private fun CellSelectedByX() {
@@ -72,3 +75,4 @@ private fun CellNotSelected() {
         onCellClick = {}
     )
 }
+// endregion
