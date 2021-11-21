@@ -43,16 +43,9 @@ class BoardViewModelTest {
     private val viewState = mockk<BoardViewState>(relaxed = true)
     private val getBoardState = mockk<GetBoardStateUseCase>()
     private val checkGameState = mockk<CheckGameStateUseCase>()
+    private val getNextPlayer = mockk<GetNextPlayerUseCase>()
     private val selectCell = mockk<SelectCellUseCase>()
     private val clearBoardUseCase = mockk<ClearBoardUseCase>()
-
-    private var currentPlayer: Player = XPlayer
-    private val getNextPlayer = mockk<GetNextPlayerUseCase> {
-        coEvery { this@mockk.invoke() } returns when (currentPlayer) {
-            is XPlayer -> OPlayer
-            is OPlayer -> XPlayer
-        }
-    }
 
     private fun createBoardViewModel() = BoardViewModel(
         viewState,
@@ -199,6 +192,7 @@ class BoardViewModelTest {
     fun `onCellClicked disables board interaction when checkGameState returns Draw`() =
         runBlockingTest {
             val nextPlayer = OPlayer
+            coEvery { getNextPlayer() } returns nextPlayer
             val givenCell = Cell(0, 0, Clear)
             coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Draw)
@@ -242,7 +236,8 @@ class BoardViewModelTest {
     @Test
     fun `onCellClicked disables board interaction when checkGameState returns Winner`() =
         runBlockingTest {
-            val nextPlayer = OPlayer
+            val nextPlayer = XPlayer
+            coEvery { getNextPlayer() } returns nextPlayer
             val givenCell = Cell(0, 0, Clear)
             coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Winner(nextPlayer))
@@ -254,11 +249,33 @@ class BoardViewModelTest {
         }
 
     @Test
-    fun `onCellClicked updates turn when checkGameState returns Ongoing`() =
+    fun `onCellClicked updates turn to XPlayer when checkGameState returns Ongoing and current player is OPlayer`() =
         runBlockingTest {
-            val currentPlayer = XPlayer
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
             val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, currentPlayer) } returns Result.success(Unit)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            // first time when viewmodel is created and second when cell selected
+            coVerify(atLeast = 2) { viewState.updateTurnToXPlayer() }
+            coVerify(exactly = 0) {
+                viewState.displayDrawGame()
+                viewState.displayXPlayerWinner()
+                viewState.displayOPlayerWinner()
+            }
+        }
+
+    @Test
+    fun `onCellClicked updates turn to OPlayer when checkGameState returns Ongoing and current player is XPlayer`() =
+        runBlockingTest {
+            val nextPlayer = OPlayer
+            coEvery { getNextPlayer() } returns nextPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
 
             val viewModel = createBoardViewModel()
@@ -275,9 +292,10 @@ class BoardViewModelTest {
     @Test
     fun `onCellClicked enables board interaction when checkGameState returns Ongoing`() =
         runBlockingTest {
-            val nextPlayer = OPlayer
+            val expectedPlayer = XPlayer
+            coEvery { getNextPlayer() } returns expectedPlayer
             val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
 
             val viewModel = createBoardViewModel()
@@ -297,6 +315,8 @@ class BoardViewModelTest {
         val viewModel = createBoardViewModel()
         viewModel.onCellClicked(givenCell)
 
+        // updateTurnToXPlayer is called when viewModel is created
+        verify(exactly = 1) { viewState.updateTurnToXPlayer() }
         verify(exactly = 0) { viewState.updateTurnToOPlayer() }
         verify { viewState.displayErrorMessage() }
     }
