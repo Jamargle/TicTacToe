@@ -38,7 +38,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         initGameStateObserver()
         setContent {
-            TicTacToeTheme { // TODO fix dark theme
+            TicTacToeTheme {
 
                 val boardState by boardViewModel.getBoardStateFlow().collectAsState()
                 val gameStateLabelState by gameStateLabel.collectAsState()

@@ -27,12 +27,7 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun TicTacToeTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
-
+    val colors = if (darkTheme) DarkColorPalette else LightColorPalette
     MaterialTheme(
         colors = colors,
         typography = Typography,

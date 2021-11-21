@@ -1,7 +1,7 @@
 package com.example.tictactoe.app.ui
 
 import android.content.res.Configuration.UI_MODE_NIGHT_NO
-import androidx.compose.foundation.background
+import android.content.res.Configuration.UI_MODE_NIGHT_YES
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Button
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
@@ -21,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.tictactoe.R
+import com.example.tictactoe.app.ui.theme.TicTacToeTheme
 import com.example.tictactoe.presentation.model.BoardUiData
 import com.example.tictactoe.presentation.model.CellUiData
 
@@ -32,26 +34,27 @@ fun BoardScreen(
     onCellClicked: (CellUiData) -> Unit,
     onRestartButtonClicked: () -> Unit
 ) {
-    val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .fillMaxHeight()
-            .background(MaterialTheme.colors.surface)
-            .verticalScroll(state = scrollState)
-    ) {
-        Header()
-        GameStateLabel(gameStateLabel)
-        Board(
-            boardSize = boardSize,
-            boardData = boardData,
-            onCellClicked = onCellClicked,
-            modifier = Modifier.align(alignment = CenterHorizontally)
-        )
-        Spacer(modifier = Modifier.weight(1f))
-        RestartButton(
-            modifier = Modifier.align(alignment = CenterHorizontally),
-            onRestartButtonClicked = onRestartButtonClicked
-        )
+    Surface {
+        val scrollState = rememberScrollState()
+        Column(
+            modifier = Modifier
+                .fillMaxHeight()
+                .verticalScroll(state = scrollState)
+        ) {
+            Header()
+            GameStateLabel(gameStateLabel)
+            Board(
+                boardSize = boardSize,
+                boardData = boardData,
+                onCellClicked = onCellClicked,
+                modifier = Modifier.align(alignment = CenterHorizontally)
+            )
+            Spacer(modifier = Modifier.weight(1f))
+            RestartButton(
+                modifier = Modifier.align(alignment = CenterHorizontally),
+                onRestartButtonClicked = onRestartButtonClicked
+            )
+        }
     }
 }
 
@@ -92,6 +95,7 @@ private fun RestartButton(
     }
 }
 
+// region previews
 @Preview(
     "Board Screen Light mode",
     uiMode = UI_MODE_NIGHT_NO,
@@ -100,11 +104,33 @@ private fun RestartButton(
 )
 @Composable
 private fun BoardScreenLight() {
-    BoardScreen(
-        boardSize = 3,
-        gameStateLabel = "Game state will be HERE",
-        boardData = BoardUiData(emptyList()),
-        onCellClicked = {},
-        onRestartButtonClicked = {}
-    )
+    TicTacToeTheme {
+        BoardScreen(
+            boardSize = 3,
+            gameStateLabel = "Game state will be HERE",
+            boardData = BoardUiData(emptyList()),
+            onCellClicked = {},
+            onRestartButtonClicked = {}
+        )
+    }
 }
+
+@Preview(
+    "Board Screen Dark mode",
+    uiMode = UI_MODE_NIGHT_YES,
+    device = Devices.NEXUS_5X,
+    showSystemUi = true
+)
+@Composable
+private fun BoardScreenDark() {
+    TicTacToeTheme {
+        BoardScreen(
+            boardSize = 3,
+            gameStateLabel = "Game state will be HERE",
+            boardData = BoardUiData(emptyList()),
+            onCellClicked = {},
+            onRestartButtonClicked = {}
+        )
+    }
+}
+// endregion
