@@ -70,6 +70,16 @@ class BoardViewModelTest {
     // endregion
 
     @Test
+    fun `on viewModel start, the interaction with the board is enabled`() = runBlockingTest {
+        val board = Board(emptyList())
+        coEvery { getBoardState() } returns flowOf(board)
+
+        val viewModel = createBoardViewModel()
+
+        assertEquals(true, viewModel.getBoardInteractionState().value)
+    }
+
+    @Test
     fun `viewModel starts displaying loading and a clear board after`() = runBlockingTest {
         val board = Board(emptyList())
         coEvery { getBoardState() } returns flowOf(board)
@@ -186,6 +196,20 @@ class BoardViewModelTest {
         }
 
     @Test
+    fun `onCellClicked disables board interaction when checkGameState returns Draw`() =
+        runBlockingTest {
+            val nextPlayer = OPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Draw)
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            assertEquals(false, viewModel.getBoardInteractionState().value)
+        }
+
+    @Test
     fun `onCellClicked displays Winner with player when checkGameState returns Winner`() =
         runBlockingTest {
             val expectedPlayer = XPlayer
@@ -198,6 +222,20 @@ class BoardViewModelTest {
             viewModel.onCellClicked(givenCell)
 
             coVerify { viewState.displayWinner(expectedPlayer) }
+        }
+
+    @Test
+    fun `onCellClicked disables board interaction when checkGameState returns Winner`() =
+        runBlockingTest {
+            val nextPlayer = OPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Winner(nextPlayer))
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            assertEquals(false, viewModel.getBoardInteractionState().value)
         }
 
     @Test
@@ -216,6 +254,20 @@ class BoardViewModelTest {
                 viewState.displayDrawGame()
                 viewState.displayWinner(any())
             }
+        }
+
+    @Test
+    fun `onCellClicked enables board interaction when checkGameState returns Ongoing`() =
+        runBlockingTest {
+            val nextPlayer = OPlayer
+            val givenCell = Cell(0, 0, Clear)
+            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
+
+            val viewModel = createBoardViewModel()
+            viewModel.onCellClicked(givenCell)
+
+            assertEquals(true, viewModel.getBoardInteractionState().value)
         }
 
     @Test
@@ -252,6 +304,16 @@ class BoardViewModelTest {
         viewModel.onRestartButtonClicked()
 
         verify { viewState.showLoading() }
+    }
+
+    @Test
+    fun `onRestartButtonClicked enables interaction with the board`() = runBlockingTest {
+        coEvery { clearBoardUseCase() } returns Result.success(Unit)
+
+        val viewModel = createBoardViewModel()
+        viewModel.onRestartButtonClicked()
+
+        assertEquals(true, viewModel.getBoardInteractionState().value)
     }
 
     @Test

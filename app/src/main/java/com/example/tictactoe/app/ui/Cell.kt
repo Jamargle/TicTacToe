@@ -23,6 +23,7 @@ import com.example.tictactoe.presentation.model.XSelected
 @Composable
 fun Cell(
     cellData: CellUiData,
+    isEnabled: Boolean,
     onCellClick: (CellUiData) -> Unit
 ) {
     Card(
@@ -35,7 +36,7 @@ fun Cell(
             .width(dimensionResource(id = R.dimen.cell_size))
             .padding(dimensionResource(id = R.dimen.default_small_space))
             .clickable(
-                enabled = cellData.state == Clear,
+                enabled = isEnabled && cellData.state == Clear,
                 onClick = { onCellClick(cellData) }
             )) {
         if (cellData.state != Clear) {
@@ -54,6 +55,7 @@ fun Cell(
 private fun CellSelectedByX() {
     Cell(
         cellData = CellUiData(0, 0, state = XSelected),
+        isEnabled = false,
         onCellClick = {}
     )
 }
@@ -63,6 +65,7 @@ private fun CellSelectedByX() {
 private fun CellSelectedByO() {
     Cell(
         cellData = CellUiData(0, 0, state = OSelected),
+        isEnabled = false,
         onCellClick = {}
     )
 }
@@ -72,6 +75,7 @@ private fun CellSelectedByO() {
 private fun CellNotSelected() {
     Cell(
         cellData = CellUiData(0, 0, state = Clear),
+        isEnabled = false,
         onCellClick = {}
     )
 }

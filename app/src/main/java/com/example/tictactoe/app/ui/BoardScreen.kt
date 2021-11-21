@@ -31,6 +31,7 @@ fun BoardScreen(
     boardSize: Int,
     gameStateLabel: String,
     boardData: BoardUiData,
+    isInteractionEnabled: Boolean,
     onCellClicked: (CellUiData) -> Unit,
     onRestartButtonClicked: () -> Unit
 ) {
@@ -46,6 +47,7 @@ fun BoardScreen(
             Board(
                 boardSize = boardSize,
                 boardData = boardData,
+                isInteractionEnabled = isInteractionEnabled,
                 onCellClicked = onCellClicked,
                 modifier = Modifier.align(alignment = CenterHorizontally)
             )
@@ -109,6 +111,7 @@ private fun BoardScreenLight() {
             boardSize = 3,
             gameStateLabel = "Game state will be HERE",
             boardData = BoardUiData(emptyList()),
+            isInteractionEnabled = false,
             onCellClicked = {},
             onRestartButtonClicked = {}
         )
@@ -128,6 +131,7 @@ private fun BoardScreenDark() {
             boardSize = 3,
             gameStateLabel = "Game state will be HERE",
             boardData = BoardUiData(emptyList()),
+            isInteractionEnabled = false,
             onCellClicked = {},
             onRestartButtonClicked = {}
         )

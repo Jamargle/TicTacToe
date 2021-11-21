@@ -15,6 +15,7 @@ fun Board(
     boardSize: Int,
     boardData: BoardUiData,
     onCellClicked: (CellUiData) -> Unit,
+    isInteractionEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
     Column(
@@ -26,6 +27,7 @@ fun Board(
                     boardData.getCell(row, column)?.let { cell ->
                         Cell(
                             cellData = cell,
+                            isEnabled = isInteractionEnabled,
                             onCellClick = { onCellClicked(cell) }
                         )
                     }

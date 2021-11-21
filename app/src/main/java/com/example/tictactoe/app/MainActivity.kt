@@ -41,13 +41,15 @@ class MainActivity : ComponentActivity() {
             TicTacToeTheme {
 
                 val boardState by boardViewModel.getBoardStateFlow().collectAsState()
+                val boardInteractionState by boardViewModel.getBoardInteractionState().collectAsState()
                 val gameStateLabelState by gameStateLabel.collectAsState()
 
                 BoardScreen(
                     boardSize = boardSize,
                     gameStateLabel = gameStateLabelState,
                     boardData = boardState,
-                    onCellClicked = { boardViewModel.onCellClicked(it.toCell()) },
+                    isInteractionEnabled = boardInteractionState,
+                    onCellClicked = { boardViewModel.onCellClicked(it.toCell()) }, // TODO clean this to use boardViewModel::onCellClicked
                     onRestartButtonClicked = boardViewModel::onRestartButtonClicked
                 )
             }

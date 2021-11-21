@@ -21,6 +21,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.callbackFlow
@@ -39,6 +40,8 @@ class BoardViewModel(
     private val clearBoardUseCase: ClearBoardUseCase,
     private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
+
+    private val isEnabledBoardInteraction: MutableStateFlow<Boolean> = MutableStateFlow(true)
 
     init {
         viewState.showLoading()
@@ -69,6 +72,11 @@ class BoardViewModel(
     fun getBoardState(): LiveData<Board> = viewState.boardState
 
     /**
+     * It lets the [BoardViewModel] consumers subscribe to get board interaction state updates.
+     */
+    fun getBoardInteractionState(): StateFlow<Boolean> = isEnabledBoardInteraction
+
+    /**
      * It lets the [BoardViewModel] consumers subscribe to get board updates via [StateFlow].
      */
     fun getBoardStateFlow(): StateFlow<BoardUiData> = viewState.boardState.asFlow()
@@ -88,7 +96,10 @@ class BoardViewModel(
     fun onRestartButtonClicked() {
         viewState.showLoading()
         viewModelScope.launch {
-            clearBoardUseCase().getOrNull()?.let { viewState.updateTurnToXPlayer() }
+            clearBoardUseCase().getOrNull()?.let {
+                viewState.updateTurnToXPlayer()
+                isEnabledBoardInteraction.value = true
+            }
         }
     }
 
@@ -118,6 +129,7 @@ class BoardViewModel(
                     GameState.Ongoing -> updateTurnForPlayer(getNextPlayerUseCase())
                     is GameState.Winner -> viewState.displayWinner(currentPlayer)
                 }
+                isEnabledBoardInteraction.value = state is GameState.Ongoing
             },
             onFailure = { viewState.displayErrorMessage() }
         )
