@@ -351,19 +351,4 @@ class BoardViewModelTest {
 
         assertEquals(true, viewModel.getBoardInteractionState().value)
     }
-
-    @Test
-    fun `onGeneralErrorPositiveButtonClicked restarts the game`() = runBlockingTest {
-        coEvery { clearBoardUseCase() } returns Result.success(Unit)
-
-        val viewModel = createBoardViewModel()
-        viewModel.onGeneralErrorPositiveButtonClicked()
-
-        coVerify { clearBoardUseCase() }
-        verify {
-            viewState.showLoading()
-            viewState.updateTurnToXPlayer()
-        }
-    }
-
 }

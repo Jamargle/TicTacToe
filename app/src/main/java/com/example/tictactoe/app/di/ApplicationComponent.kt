@@ -1,7 +1,6 @@
 package com.example.tictactoe.app.di
 
 import android.content.Context
-import com.example.tictactoe.app.features.board.BoardFragment
 import com.example.tictactoe.app.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -22,7 +21,5 @@ interface ApplicationComponent {
     }
 
     fun inject(mainActivity: MainActivity)
-
-    fun inject(boardFragment: BoardFragment)
 
 }

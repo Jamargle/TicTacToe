@@ -103,10 +103,6 @@ class BoardViewModel(
         }
     }
 
-    fun onGeneralErrorPositiveButtonClicked() {
-        onRestartButtonClicked()
-    }
-
     fun onCellClicked(cell: Cell) {
         viewModelScope.launch {
             val currentPlayer = getNextPlayerUseCase()

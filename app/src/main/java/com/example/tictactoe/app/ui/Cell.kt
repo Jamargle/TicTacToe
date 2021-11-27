@@ -10,6 +10,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.dimensionResource
 import androidx.compose.ui.res.painterResource
@@ -42,6 +43,7 @@ fun Cell(
         if (cellData.state != Clear) {
             Image(
                 painter = painterResource(id = cellData.state.selectionImage),
+                colorFilter = ColorFilter.tint(MaterialTheme.colors.onSurface),
                 contentDescription = null, // TODO modify content description
                 contentScale = ContentScale.Fit
             )
