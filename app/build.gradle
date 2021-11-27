@@ -88,6 +88,9 @@ dependencies {
     testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:$versions.coroutinesVersion"
     androidTestImplementation "androidx.test.ext:junit:$versions.androidXJUnitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$versions.espressoCoreVersion"
+
+    androidTestImplementation "androidx.compose.ui:ui-test-junit4:$versions.composeVersion"
+    debugImplementation("androidx.compose.ui:ui-test-manifest:$versions.composeVersion")
     // endregion
 
     debugImplementation "com.squareup.leakcanary:leakcanary-android:$versions.canaryLeakVersion"
