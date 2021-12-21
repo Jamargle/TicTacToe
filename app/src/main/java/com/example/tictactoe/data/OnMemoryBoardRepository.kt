@@ -3,12 +3,8 @@ package com.example.tictactoe.data
 import com.example.tictactoe.app.di.ApplicationModule.Companion.BOARD_SIZE
 import com.example.tictactoe.domain.model.Board
 import com.example.tictactoe.domain.model.Cell
+import com.example.tictactoe.domain.model.CellState
 import com.example.tictactoe.domain.model.Clear
-import com.example.tictactoe.domain.model.OPlayer
-import com.example.tictactoe.domain.model.OSelected
-import com.example.tictactoe.domain.model.Player
-import com.example.tictactoe.domain.model.XPlayer
-import com.example.tictactoe.domain.model.XSelected
 import com.example.tictactoe.domain.repositories.BoardRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,21 +22,11 @@ class OnMemoryBoardRepository
 
     override suspend fun getBoard(): StateFlow<Board> = boardFlow
 
-    override fun updateCellSelection(cell: Cell, player: Player): Result<Unit> =
-        if (!cell.isClearInBoard()) {
-            Result.failure(IllegalArgumentException("Cell was already selected"))
-        } else {
-            applySelectedStateForPlayer(cell, player)
-        }
+    override fun updateCellSelection(cell: Cell, selection: CellState): Result<Unit> =
+        updateSelection(cell, selection)
 
     override fun clearCellSelection(cell: Cell): Result<Unit> =
-        boardFlow.value.getCell(cell)?.let { cellToUnSelect ->
-            if (cellToUnSelect.state == Clear) {
-                Result.success(Unit)
-            } else {
-                clearSelectionForCell(cellToUnSelect)
-            }
-        } ?: Result.failure(Throwable("Something went wrong while unselecting cell $cell"))
+        updateSelection(cell, Clear)
 
     private fun getClearBoard(): Board {
         val clearCells = mutableListOf<Cell>()
@@ -52,43 +38,31 @@ class OnMemoryBoardRepository
         return Board(clearCells)
     }
 
-    private fun Cell.isClearInBoard(): Boolean =
-        boardFlow.value.cells.contains(this.copy(state = Clear))
-
     /**
-     * Removes the cell that changes state if it was not previously selected. Then added it
-     * at the end of the list with the new state.
+     * Removes the cell that changes state if it was not previously selected.
+     * Then added it at the end of the list with the new state or at the beginning if
+     * the new state is [Clear].
      * This helps to know the last movement.
      */
-    private fun applySelectedStateForPlayer(cell: Cell, player: Player): Result<Unit> {
-        with(boardFlow.value.cells.toMutableList()) {
-            if (remove(cell)) {
-                val selectedCell = cell.copy(
-                    state = when (player) {
-                        OPlayer -> OSelected
-                        XPlayer -> XSelected
-                    }
-                )
-                add(selectedCell)
-                boardFlow.value = Board(this)
+    private fun updateSelection(cell: Cell, selection: CellState): Result<Unit> {
+        boardFlow.value.getCell(cell)?.let { cellToUpdate ->
+            if (cellToUpdate.state == selection) {
                 return Result.success(Unit)
             }
         }
-        return Result.failure(Throwable("The cell could not be selected"))
-    }
 
-    /**
-     * Removes the cell that changes state. Then is added at the beginning of the list
-     * of cells so that the last movement is still the last cell in the list.
-     */
-    private fun clearSelectionForCell(cell: Cell): Result<Unit> {
         with(boardFlow.value.cells.toMutableList()) {
             if (remove(cell)) {
-                add(0, cell.copy(state = Clear))
+                val selectedCell = cell.copy(state = selection)
+                if (selection == Clear) {
+                    add(0, selectedCell)
+                } else {
+                    add(selectedCell)
+                }
                 boardFlow.value = Board(this)
                 return Result.success(Unit)
             }
         }
-        return Result.failure(Throwable("The cell could not be unselected"))
+        return Result.failure(Throwable("The cell selection cannot be changed"))
     }
 }

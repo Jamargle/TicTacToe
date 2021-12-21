@@ -2,9 +2,7 @@ package com.example.tictactoe.data
 
 import com.example.tictactoe.domain.model.Cell
 import com.example.tictactoe.domain.model.Clear
-import com.example.tictactoe.domain.model.OPlayer
 import com.example.tictactoe.domain.model.OSelected
-import com.example.tictactoe.domain.model.XPlayer
 import com.example.tictactoe.domain.model.XSelected
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
@@ -29,21 +27,30 @@ class OnMemoryBoardRepositoryTest {
     }
 
     @Test
+    fun `updateCellSelection returns success when trying to update a cell with same selection`() =
+        runBlockingTest {
+            assertTrue(repository.updateCellSelection(Cell(0, 0), XSelected).isSuccess)
+            assertTrue(repository.updateCellSelection(Cell(0, 0), XSelected).isSuccess)
+            assertTrue(repository.updateCellSelection(Cell(0, 1), OSelected).isSuccess)
+            assertTrue(repository.updateCellSelection(Cell(0, 1), OSelected).isSuccess)
+            assertTrue(repository.updateCellSelection(Cell(0, 2), Clear).isSuccess)
+            assertTrue(repository.updateCellSelection(Cell(0, 2), Clear).isSuccess)
+        }
+
+    @Test
     fun `updateCellSelection returns failure when trying to update a cell that was already selected`() =
         runBlockingTest {
-            val resultMove1 = repository.updateCellSelection(Cell(0, 0), XPlayer)
-            val resultMove2 = repository.updateCellSelection(Cell(0, 0), XPlayer)
-            val resultMove3 = repository.updateCellSelection(Cell(0, 0), OPlayer)
+            val resultMove1 = repository.updateCellSelection(Cell(0, 0), XSelected)
+            val resultMove2 = repository.updateCellSelection(Cell(0, 0), OSelected)
 
             assertTrue(resultMove1.isSuccess)
             assertTrue(resultMove2.isFailure)
-            assertTrue(resultMove3.isFailure)
         }
 
     @Test
     fun `updateCellSelection updates board flow when board changes`() = runBlockingTest {
         val initialBoard = repository.getBoard().first()
-        repository.updateCellSelection(Cell(0, 0), XPlayer)
+        repository.updateCellSelection(Cell(0, 0), XSelected)
 
         val boardAfterUpdate = repository.getBoard().first()
 
@@ -59,7 +66,7 @@ class OnMemoryBoardRepositoryTest {
 
     @Test
     fun `updateCellSelection returns success if selection changed`() = runBlockingTest {
-        val result = repository.updateCellSelection(Cell(0, 0), XPlayer)
+        val result = repository.updateCellSelection(Cell(0, 0), XSelected)
         assertTrue(result.isSuccess)
     }
 
@@ -71,17 +78,16 @@ class OnMemoryBoardRepositoryTest {
         }
 
     @Test
-    fun `clearCellSelection returns success if selection was changed to Clear`() =
-        runBlockingTest {
-            repository.updateCellSelection(Cell(0, 1), XPlayer)
-            repository.updateCellSelection(Cell(0, 2), OPlayer)
+    fun `clearCellSelection returns success if selection was changed to Clear`() = runBlockingTest {
+        repository.updateCellSelection(Cell(0, 1), XSelected)
+        repository.updateCellSelection(Cell(0, 2), OSelected)
 
-            val resultXSelected = repository.clearCellSelection(Cell(0, 1, XSelected))
-            val resultOSelected = repository.clearCellSelection(Cell(0, 2, OSelected))
+        val resultXSelected = repository.clearCellSelection(Cell(0, 1, XSelected))
+        val resultOSelected = repository.clearCellSelection(Cell(0, 2, OSelected))
 
-            assertTrue(resultXSelected.isSuccess)
-            assertTrue(resultOSelected.isSuccess)
-        }
+        assertTrue(resultXSelected.isSuccess)
+        assertTrue(resultOSelected.isSuccess)
+    }
 
     @Test
     fun `clearCellSelection returns success if selection was already Clear`() =
