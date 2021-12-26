@@ -2,17 +2,14 @@ package com.example.tictactoe.presentation.board
 
 import androidx.lifecycle.MutableLiveData
 import com.example.tictactoe.domain.model.Board
-import com.example.tictactoe.domain.model.Player
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 class BoardViewState
 @Inject constructor() {
 
     internal val viewState: MutableLiveData<ViewStates> = MutableLiveData()
-    internal val boardState: MutableLiveData<Board> = MutableLiveData(Board(emptyList())) // TODO refactor to StateFlow for this to not be null
-
-    @Deprecated("It will be removed when view state and game state get unified")
-    internal val playerTurn: MutableLiveData<Player> = MutableLiveData()
+    internal val boardState: MutableStateFlow<Board> = MutableStateFlow(Board(emptyList()))
 
     fun showLoading() = viewState.postValue(ViewStates.Loading)
 

@@ -5,17 +5,19 @@ import androidx.lifecycle.MutableLiveData
 import com.example.tictactoe.MainCoroutineRule
 import com.example.tictactoe.domain.model.Board
 import com.example.tictactoe.domain.model.Cell
-import com.example.tictactoe.domain.model.Clear
 import com.example.tictactoe.domain.model.GameState
 import com.example.tictactoe.domain.model.OPlayer
-import com.example.tictactoe.domain.model.OSelected
-import com.example.tictactoe.domain.model.Player
 import com.example.tictactoe.domain.model.XPlayer
 import com.example.tictactoe.domain.usecases.CheckGameStateUseCase
 import com.example.tictactoe.domain.usecases.ClearBoardUseCase
 import com.example.tictactoe.domain.usecases.GetBoardStateUseCase
 import com.example.tictactoe.domain.usecases.GetNextPlayerUseCase
 import com.example.tictactoe.domain.usecases.SelectCellUseCase
+import com.example.tictactoe.presentation.mappers.BoardMapper
+import com.example.tictactoe.presentation.mappers.CellMapper
+import com.example.tictactoe.presentation.model.CellUiData
+import com.example.tictactoe.presentation.model.Clear
+import com.example.tictactoe.presentation.model.OSelected
 import io.mockk.Ordering
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -29,6 +31,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import com.example.tictactoe.domain.model.Clear as DomainClear
 
 @ExperimentalCoroutinesApi
 class BoardViewModelTest {
@@ -45,6 +48,8 @@ class BoardViewModelTest {
     private val checkGameState = mockk<CheckGameStateUseCase>()
     private val getNextPlayer = mockk<GetNextPlayerUseCase>()
     private val selectCell = mockk<SelectCellUseCase>()
+    private val boardMapper = mockk<BoardMapper>()
+    private val cellMapper = mockk<CellMapper>()
     private val clearBoardUseCase = mockk<ClearBoardUseCase>()
 
     private fun createBoardViewModel() = BoardViewModel(
@@ -53,7 +58,9 @@ class BoardViewModelTest {
         checkGameState,
         getNextPlayer,
         selectCell,
-        clearBoardUseCase
+        clearBoardUseCase,
+        boardMapper,
+        cellMapper
     )
 
     @Before
@@ -105,41 +112,19 @@ class BoardViewModelTest {
     }
 
     @Test
-    fun `viewModel exposes state of the board through getBoardState`() = runBlockingTest {
-        val expectedBoardState = mockk<MutableLiveData<Board>>()
-        every { viewState.boardState } returns expectedBoardState
-        val viewModel = createBoardViewModel()
-
-        assertEquals(
-            expectedBoardState,
-            viewModel.getBoardState()
-        )
-    }
-
-    @Test
-    fun `viewModel exposes current player turn through getBoardState`() = runBlockingTest {
-        val expectedPlayerTurn = mockk<MutableLiveData<Player>>()
-        every { viewState.playerTurn } returns expectedPlayerTurn
-        val viewModel = createBoardViewModel()
-
-        assertEquals(
-            expectedPlayerTurn,
-            viewModel.getPlayerTurnState()
-        )
-    }
-
-    @Test
     fun `onCellClicked marks cell as selected for the next player if selectCell returns success`() =
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
 
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
 
-            coVerify(exactly = 1) { selectCell(givenCell, expectedPlayer) }
+            coVerify(exactly = 1) { selectCell(domainCell, expectedPlayer) }
         }
 
     @Test
@@ -147,14 +132,16 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
 
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
 
             coVerify(ordering = Ordering.ORDERED) {
-                selectCell(givenCell, expectedPlayer)
+                selectCell(domainCell, expectedPlayer)
                 checkGameState()
             }
         }
@@ -164,8 +151,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, any()) } returns Result.failure(Throwable(""))
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, any()) } returns Result.failure(Throwable(""))
 
             val viewModel = createBoardViewModel()
             viewModel.onCellClicked(givenCell)
@@ -178,8 +167,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Draw)
 
             val viewModel = createBoardViewModel()
@@ -193,8 +184,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val nextPlayer = OPlayer
             coEvery { getNextPlayer() } returns nextPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, nextPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Draw)
 
             val viewModel = createBoardViewModel()
@@ -208,8 +201,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Winner(expectedPlayer))
 
             val viewModel = createBoardViewModel()
@@ -223,8 +218,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = OPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Winner(expectedPlayer))
 
             val viewModel = createBoardViewModel()
@@ -238,8 +235,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val nextPlayer = XPlayer
             coEvery { getNextPlayer() } returns nextPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, nextPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Winner(nextPlayer))
 
             val viewModel = createBoardViewModel()
@@ -253,8 +252,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
 
             val viewModel = createBoardViewModel()
@@ -274,8 +275,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val nextPlayer = OPlayer
             coEvery { getNextPlayer() } returns nextPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, nextPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, nextPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
 
             val viewModel = createBoardViewModel()
@@ -294,8 +297,10 @@ class BoardViewModelTest {
         runBlockingTest {
             val expectedPlayer = XPlayer
             coEvery { getNextPlayer() } returns expectedPlayer
-            val givenCell = Cell(0, 0, Clear)
-            coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+            val givenCell = CellUiData(0, 0, Clear)
+            val domainCell = Cell(0, 0, DomainClear)
+            every { cellMapper.mapToDomain(givenCell) } returns domainCell
+            coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
             coEvery { checkGameState() } returns Result.success(GameState.Ongoing)
 
             val viewModel = createBoardViewModel()
@@ -308,8 +313,10 @@ class BoardViewModelTest {
     fun `onCellClicked displays error if checking the game returns failure`() = runBlockingTest {
         val expectedPlayer = XPlayer
         coEvery { getNextPlayer() } returns expectedPlayer
-        val givenCell = Cell(0, 0, OSelected)
-        coEvery { selectCell(givenCell, expectedPlayer) } returns Result.success(Unit)
+        val givenCell = CellUiData(0, 0, OSelected)
+        val domainCell = Cell(0, 0, DomainClear)
+        every { cellMapper.mapToDomain(givenCell) } returns domainCell
+        coEvery { selectCell(domainCell, expectedPlayer) } returns Result.success(Unit)
         coEvery { checkGameState() } returns Result.failure(Throwable(""))
 
         val viewModel = createBoardViewModel()

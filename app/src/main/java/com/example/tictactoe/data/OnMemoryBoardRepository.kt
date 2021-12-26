@@ -29,13 +29,13 @@ class OnMemoryBoardRepository
         updateSelection(cell, Clear)
 
     private fun getClearBoard(): Board {
-        val clearCells = mutableListOf<Cell>()
+        val unselectedCells = mutableListOf<Cell>()
         for (row in 0 until boardSideSize) {
             for (column in 0 until boardSideSize) {
-                clearCells.add(Cell(column, row))
+                unselectedCells.add(Cell(column, row))
             }
         }
-        return Board(clearCells)
+        return Board(unselectedCells)
     }
 
     /**

@@ -1,6 +1,6 @@
 package com.example.tictactoe.domain.model
 
-data class Board(
+class Board(
     val cells: List<Cell>
 ) {
     fun isCompleted() = cells.find { it.state == Clear } == null
