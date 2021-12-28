@@ -1,4 +1,4 @@
-package com.example.tictactoe.presentation.model.mappers
+package com.example.tictactoe.presentation.mappers
 
 import com.example.tictactoe.presentation.model.CellUiData
 import org.junit.Assert.assertEquals
@@ -14,10 +14,10 @@ import com.example.tictactoe.presentation.model.XSelected as PresentationXSelect
 class CellMapperKtTest {
 
     @Test
-    fun `DomainCell_toCellUiData returns converted CellUiData for DomainCell Clear`() {
+    fun `mapToPresentation returns converted CellUiData for DomainCell Clear`() {
         val givenCell = DomainCell(1, 2, DomainClear)
 
-        with(givenCell.toCellUiData()) {
+        with(CellMapper.mapToPresentation(givenCell)) {
             assertEquals(1, column)
             assertEquals(2, row)
             assertEquals(PresentationClear, state)
@@ -25,10 +25,10 @@ class CellMapperKtTest {
     }
 
     @Test
-    fun `DomainCell_toCellUiData returns converted CellUiData for DomainCell OSelected`() {
+    fun `mapToPresentation returns converted CellUiData for DomainCell OSelected`() {
         val givenCell = DomainCell(1, 2, DomainOSelected)
 
-        with(givenCell.toCellUiData()) {
+        with(CellMapper.mapToPresentation(givenCell)) {
             assertEquals(1, column)
             assertEquals(2, row)
             assertEquals(PresentationOSelected, state)
@@ -36,10 +36,10 @@ class CellMapperKtTest {
     }
 
     @Test
-    fun `DomainCell_toCellUiData returns converted CellUiData for DomainCell XSelected`() {
+    fun `mapToPresentation returns converted CellUiData for DomainCell XSelected`() {
         val givenCell = DomainCell(1, 2, DomainXSelected)
 
-        with(givenCell.toCellUiData()) {
+        with(CellMapper.mapToPresentation(givenCell)) {
             assertEquals(1, column)
             assertEquals(2, row)
             assertEquals(PresentationXSelected, state)
@@ -47,10 +47,10 @@ class CellMapperKtTest {
     }
 
     @Test
-    fun `CellUiData_toCell returns converted Cell for CellUiData Clear`() {
+    fun `mapCellToDomain returns converted Cell for CellUiData Clear`() {
         val givenCell = CellUiData(1, 2, PresentationClear)
 
-        with(givenCell.toCell()) {
+        with(CellMapper.mapToDomain(givenCell)) {
             assertEquals(1, column)
             assertEquals(2, row)
             assertEquals(DomainClear, state)
@@ -58,10 +58,10 @@ class CellMapperKtTest {
     }
 
     @Test
-    fun `CellUiData_toCell returns converted Cell for CellUiData OSelected`() {
+    fun `mapCellToDomain returns converted Cell for CellUiData OSelected`() {
         val givenCell = CellUiData(1, 2, PresentationOSelected)
 
-        with(givenCell.toCell()) {
+        with(CellMapper.mapToDomain(givenCell)) {
             assertEquals(1, column)
             assertEquals(2, row)
             assertEquals(DomainOSelected, state)
@@ -69,10 +69,10 @@ class CellMapperKtTest {
     }
 
     @Test
-    fun `CellUiData_toCell returns converted Cell for CellUiData XSelected`() {
+    fun `mapCellToDomain returns converted Cell for CellUiData XSelected`() {
         val givenCell = CellUiData(1, 2, PresentationXSelected)
 
-        with(givenCell.toCell()) {
+        with(CellMapper.mapToDomain(givenCell)) {
             assertEquals(1, column)
             assertEquals(2, row)
             assertEquals(DomainXSelected, state)

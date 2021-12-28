@@ -1,10 +1,7 @@
 package com.example.tictactoe.presentation.board
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.tictactoe.domain.model.Board
 import com.example.tictactoe.domain.model.Cell
 import com.example.tictactoe.domain.model.GameState
 import com.example.tictactoe.domain.model.OPlayer
@@ -15,16 +12,15 @@ import com.example.tictactoe.domain.usecases.ClearBoardUseCase
 import com.example.tictactoe.domain.usecases.GetBoardStateUseCase
 import com.example.tictactoe.domain.usecases.GetNextPlayerUseCase
 import com.example.tictactoe.domain.usecases.SelectCellUseCase
+import com.example.tictactoe.presentation.mappers.BoardMapper
+import com.example.tictactoe.presentation.mappers.CellMapper
 import com.example.tictactoe.presentation.model.BoardUiData
-import com.example.tictactoe.presentation.model.mappers.toBoardData
+import com.example.tictactoe.presentation.model.CellUiData
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
@@ -38,6 +34,8 @@ class BoardViewModel(
     private val getNextPlayerUseCase: GetNextPlayerUseCase,
     private val selectCellUseCase: SelectCellUseCase,
     private val clearBoardUseCase: ClearBoardUseCase,
+    private val boardMapper: BoardMapper,
+    private val cellMapper: CellMapper,
     private val backgroundDispatcher: CoroutineDispatcher = Dispatchers.IO
 ) : ViewModel() {
 
@@ -64,12 +62,7 @@ class BoardViewModel(
     /**
      * It lets the [BoardViewModel] consumers subscribe to get view state updates.
      */
-    fun getViewState(): LiveData<ViewStates> = viewState.viewState
-
-    /**
-     * It lets the [BoardViewModel] consumers subscribe to get board updates.
-     */
-    fun getBoardState(): LiveData<Board> = viewState.boardState
+    fun getViewState(): StateFlow<ViewStates> = viewState.viewState
 
     /**
      * It lets the [BoardViewModel] consumers subscribe to get board interaction state updates.
@@ -79,19 +72,13 @@ class BoardViewModel(
     /**
      * It lets the [BoardViewModel] consumers subscribe to get board updates via [StateFlow].
      */
-    fun getBoardStateFlow(): StateFlow<BoardUiData> = viewState.boardState.asFlow()
-        .map { it.toBoardData() }
+    fun getBoardState(): StateFlow<BoardUiData> = viewState.boardState
+        .map { boardMapper.mapToPresentation(it) }
         .stateIn(
             viewModelScope,
             initialValue = BoardUiData(emptyList()),
             started = SharingStarted.WhileSubscribed(2000)
         )
-
-    /**
-     * It lets the [BoardViewModel] consumers subscribe to get player turn updates.
-     */
-    @Deprecated("It will be removed after unifying with game state and view state")
-    fun getPlayerTurnState(): LiveData<Player> = viewState.playerTurn
 
     fun onRestartButtonClicked() {
         viewState.showLoading()
@@ -103,10 +90,10 @@ class BoardViewModel(
         }
     }
 
-    fun onCellClicked(cell: Cell) {
+    fun onCellClicked(cell: CellUiData) {
         viewModelScope.launch {
             val currentPlayer = getNextPlayerUseCase()
-            selectCell(cell, currentPlayer)
+            selectCell(cellMapper.mapToDomain(cell), currentPlayer)
         }
     }
 
@@ -140,11 +127,4 @@ class BoardViewModel(
             XPlayer -> viewState.updateTurnToXPlayer()
         }
     }
-
-    // TODO remove this when LiveData is removed
-    private fun <T> LiveData<T>.asFlow(): Flow<T> = callbackFlow {
-        val observer = Observer<T> { value -> trySend(value).isSuccess }
-        observeForever(observer)
-        awaitClose { removeObserver(observer) }
-    }.flowOn(Dispatchers.Main.immediate)
 }

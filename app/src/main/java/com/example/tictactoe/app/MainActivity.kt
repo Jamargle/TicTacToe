@@ -6,13 +6,17 @@ import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.flowWithLifecycle
+import androidx.lifecycle.lifecycleScope
 import com.example.tictactoe.app.di.ApplicationModule.Companion.BOARD_SIZE
 import com.example.tictactoe.app.di.BoardViewModelFactory
 import com.example.tictactoe.app.ui.BoardScreen
 import com.example.tictactoe.app.ui.theme.TicTacToeTheme
 import com.example.tictactoe.presentation.board.BoardViewModel
-import com.example.tictactoe.presentation.model.mappers.toCell
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -36,7 +40,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             TicTacToeTheme {
 
-                val boardState by boardViewModel.getBoardStateFlow().collectAsState()
+                val boardState by boardViewModel.getBoardState().collectAsState()
                 val boardInteractionState by boardViewModel.getBoardInteractionState().collectAsState()
                 val gameStateLabelState by gameStateLabel.collectAsState()
 
@@ -45,7 +49,7 @@ class MainActivity : ComponentActivity() {
                     gameStateLabel = gameStateLabelState,
                     boardData = boardState,
                     isInteractionEnabled = boardInteractionState,
-                    onCellClicked = { boardViewModel.onCellClicked(it.toCell()) }, // TODO clean this to use boardViewModel::onCellClicked
+                    onCellClicked = boardViewModel::onCellClicked,
                     onRestartButtonClicked = boardViewModel::onRestartButtonClicked
                 )
             }
@@ -53,8 +57,12 @@ class MainActivity : ComponentActivity() {
     }
 
     private fun initGameStateObserver() {
-        boardViewModel.getViewState().observe(this) {
-            gameStateLabel.value = getString(it.gameStateLabelRes)
+        lifecycleScope.launch {
+            boardViewModel.getViewState()
+                .flowWithLifecycle(lifecycle, Lifecycle.State.STARTED)
+                .collect {
+                    gameStateLabel.value = getString(it.gameStateLabelRes)
+                }
         }
     }
 

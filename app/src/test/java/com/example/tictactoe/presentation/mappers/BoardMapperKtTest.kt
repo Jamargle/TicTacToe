@@ -1,4 +1,4 @@
-package com.example.tictactoe.presentation.model.mappers
+package com.example.tictactoe.presentation.mappers
 
 import com.example.tictactoe.domain.model.Board
 import com.example.tictactoe.domain.model.Cell
@@ -11,14 +11,14 @@ import org.junit.Test
 class BoardMapperKtTest {
 
     @Test
-    fun `Board_toBoardData returns BoardUiData with converted cell data`() {
+    fun `mapToPresentation returns BoardUiData with converted cell data`() {
         val givenCell = mockk<Cell>()
         val givenBoard = Board(listOf(givenCell))
         val expectedCellUiData = mockk<CellUiData>()
         val mockedMapper = mockk<(Cell) -> CellUiData>()
         every { mockedMapper(givenCell) } returns expectedCellUiData
 
-        val result = givenBoard.toBoardData(mockedMapper)
+        val result = BoardMapper.mapToPresentation(givenBoard, mockedMapper)
 
         with(result) {
             assertEquals(1, cells.size)

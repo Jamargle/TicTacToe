@@ -10,7 +10,8 @@ import javax.inject.Singleton
 @Component(
     modules = [
         ApplicationModule::class,
-        RepositoryModule::class
+        RepositoryModule::class,
+        MapperModule::class
     ]
 )
 interface ApplicationComponent {
