@@ -1,7 +1,6 @@
 package com.example.tictactoe.presentation.board
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.MutableLiveData
 import com.example.tictactoe.MainCoroutineRule
 import com.example.tictactoe.domain.model.Board
 import com.example.tictactoe.domain.model.Cell
@@ -25,6 +24,7 @@ import io.mockk.every
 import io.mockk.mockk
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert.assertEquals
@@ -45,8 +45,8 @@ class BoardViewModelTest {
 
     private val viewState = mockk<BoardViewState>(relaxed = true)
     private val getBoardState = mockk<GetBoardStateUseCase>()
-    private val checkGameState = mockk<CheckGameStateUseCase>()
-    private val getNextPlayer = mockk<GetNextPlayerUseCase>()
+    private val checkGameState = mockk<CheckGameStateUseCase>(relaxed = true)
+    private val getNextPlayer = mockk<GetNextPlayerUseCase>(relaxed = true)
     private val selectCell = mockk<SelectCellUseCase>()
     private val boardMapper = mockk<BoardMapper>()
     private val cellMapper = mockk<CellMapper>()
@@ -101,7 +101,7 @@ class BoardViewModelTest {
 
     @Test
     fun `viewModel exposes state of the view through getViewState`() = runBlockingTest {
-        val expectedViewState = mockk<MutableLiveData<ViewStates>>()
+        val expectedViewState = mockk<MutableStateFlow<ViewStates>>()
         every { viewState.viewState } returns expectedViewState
         val viewModel = createBoardViewModel()
 

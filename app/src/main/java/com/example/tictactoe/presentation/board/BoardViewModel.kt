@@ -1,6 +1,5 @@
 package com.example.tictactoe.presentation.board
 
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.tictactoe.domain.model.Cell
@@ -63,7 +62,7 @@ class BoardViewModel(
     /**
      * It lets the [BoardViewModel] consumers subscribe to get view state updates.
      */
-    fun getViewState(): LiveData<ViewStates> = viewState.viewState
+    fun getViewState(): StateFlow<ViewStates> = viewState.viewState
 
     /**
      * It lets the [BoardViewModel] consumers subscribe to get board interaction state updates.
